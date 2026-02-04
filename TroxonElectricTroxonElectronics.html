@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Troxon Electric</title>
+    <link rel="icon" href="troxon.png" type="image/x-icon">
+    <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --secondary-blue: #0d62d9;
+            --primary-green: #34a853;
+            --secondary-green: #2e8b47;
+            --white: #FFFFFF;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333333;
+            --text-dark: #202124;
+            --text-light: #5f6368;
+            --success: #34a853;
+            --danger: #ea4335;
+            --warning: #fbbc05;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; 
+            background: var(--white); 
+            color: var(--text-dark); 
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Password Modal Styles */
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .password-container {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--primary-blue);
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .password-container h2 {
+            color: var(--primary-blue);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .password-container .subtitle {
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .password-container .warning {
+            background: rgba(251, 188, 5, 0.1);
+            border: 1px solid var(--warning);
+            color: #b06c00;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        
+        .password-strength-meter {
+            height: 6px;
+            background: var(--light-gray);
+            border-radius: 3px;
+            margin: 10px 0 20px;
+            overflow: hidden;
+        }
+        
+        .password-strength-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--danger);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .password-strength-fill.weak {
+            width: 33%;
+            background: var(--danger);
+        }
+        
+        .password-strength-fill.medium {
+            width: 66%;
+            background: var(--warning);
+        }
+        
+        .password-strength-fill.strong {
+            width: 100%;
+            background: var(--success);
+        }
+        
+        .password-requirements {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        
+        .password-requirements ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+        
+        .password-requirements li {
+            margin-bottom: 5px;
+            color: var(--text-light);
+        }
+        
+        .password-requirements li.valid {
+            color: var(--success);
+        }
+        
+        .password-requirements li.valid::before {
+            content: "✓ ";
+            font-weight: bold;
+        }
+        
+        .password-input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .password-input-group input {
+            padding-right: 50px;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: none; /* Hidden until password verified */
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+        
+        h1 { 
+            color: var(--primary-blue); 
+            margin-bottom: 10px;
+            font-size: clamp(2em, 5vw, 2.5em);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        h1 span {
+            color: var(--primary-green);
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: var(--text-light);
+            font-size: clamp(1em, 3vw, 1.1em);
+            font-weight: 400;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 30px;
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 8px;
+            border: 1px solid var(--medium-gray);
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 12px 20px;
+            background: transparent;
+            color: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(26, 115, 232, 0.1);
+            color: var(--primary-blue);
+        }
+        
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Upload Form Styles */
+        .admin-card { 
+            background: var(--white); 
+            padding: clamp(20px, 4vw, 30px); 
+            border-radius: 15px; 
+            border: 1px solid var(--medium-gray);
+            box-shadow: var(--card-shadow); 
+            margin-bottom: 30px;
+        }
+        
+        h2 { 
+            color: var(--primary-blue); 
+            margin-bottom: 25px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 15px;
+            font-size: clamp(1.5em, 4vw, 1.8em);
+        }
+        
+        input, textarea, select, button { 
+            width: 100%; 
+            margin-bottom: 15px; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid var(--medium-gray); 
+            outline: none; 
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: var(--text-light);
+        }
+        
+        select option {
+            background: var(--white);
+            color: var(--text-dark);
+            padding: 10px;
+        }
+        
+        button { 
+            background: var(--primary-blue); 
+            color: var(--white); 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s;
+            font-size: 16px;
+            border: none;
+            padding: 14px;
+        }
+        
+        button:hover { 
+            background: var(--secondary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        button:disabled {
+            background: var(--medium-gray);
+            color: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: var(--secondary-green);
+        }
+        
+        #preview { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            display: none; 
+            margin-bottom: 15px; 
+            border: 2px solid var(--medium-gray); 
+            background: var(--light-gray);
+        }
+        
+        #status { 
+            text-align: center; 
+            font-size: 0.9em; 
+            color: var(--text-light); 
+            min-height: 20px;
+            margin-top: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        .required::after {
+            content: " *";
+            color: var(--danger);
+        }
+        
+        /* Products Grid Styles */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .product-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s;
+            border: 1px solid var(--medium-gray);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+            border-color: var(--primary-blue);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        
+        .product-price {
+            color: var(--primary-green);
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            background: rgba(52, 168, 83, 0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .product-category {
+            display: inline-block;
+            background: rgba(26, 115, 232, 0.1);
+            color: var(--primary-blue);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+            border: 1px solid rgba(26, 115, 232, 0.2);
+            font-weight: 500;
+        }
+        
+        .product-description {
+            color: var(--text-light);
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .product-actions button {
+            flex: 1;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+        
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--light-gray);
+            border-radius: 50%;
+            border-top-color: var(--primary-blue);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--medium-gray);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-size: 1em;
+        }
+        
+        /* No Products Message */
+        .no-products {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--white);
+            border-radius: 12px;
+            color: var(--text-light);
+            border: 1px solid var(--medium-gray);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .no-products i {
+            font-size: 3em;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+        }
+        
+        /* Success/Error Messages */
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid;
+            background: var(--white);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .message.success {
+            background: rgba(52, 168, 83, 0.1);
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+        
+        .message.error {
+            background: rgba(234, 67, 53, 0.1);
+            color: var(--danger);
+            border-left-color: var(--danger);
+        }
+        
+        .message.info {
+            background: rgba(26, 115, 232, 0.1);
+            color: var(--primary-blue);
+            border-left-color: var(--primary-blue);
+        }
+        
+        /* Back Link */
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 1em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(26, 115, 232, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(26, 115, 232, 0.2);
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .back-link a:hover {
+            background: rgba(26, 115, 232, 0.2);
+            text-decoration: none;
+        }
+        
+        /* Category badges */
+        .category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            margin: 2px;
+            background: rgba(26, 115, 232, 0.1);
+            border-radius: 20px;
+            font-size: 0.8em;
+            border: 1px solid rgba(26, 115, 232, 0.2);
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-card {
+                padding: 15px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                min-width: unset;
+            }
+            
+            .password-container {
+                padding: 20px;
+            }
+            
+            .password-container h2 {
+                font-size: 1.5em;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .product-actions {
+                flex-direction: column;
+            }
+            
+            .product-actions button {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .password-container {
+                padding: 15px;
+            }
+            
+            .password-container h2 {
+                font-size: 1.3em;
+            }
+            
+            .subtitle {
+                font-size: 0.9em;
+            }
+            
+            input, textarea, select, button {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            button {
+                padding: 12px;
+            }
+        }
+        
+        /* File Input Styling */
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-container input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-label {
+            display: block;
+            padding: 12px;
+            background: var(--light-gray);
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            text-align: center;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-input-label:hover {
+            background: var(--medium-gray);
+        }
+        
+        .file-name {
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: var(--text-light);
+        }
+        
+        /* Hide/Show Password Icon */
+        .fa-eye, .fa-eye-slash {
+            font-size: 18px;
+        }
+        
+        /* Responsive table for small screens */
+        .mobile-table {
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .desktop-table {
+                display: none;
+            }
+            
+            .mobile-table {
+                display: block;
+            }
+        }
+        
+        /* Additional responsive utilities */
+        .hide-on-mobile {
+            display: block;
+        }
+        
+        .show-on-mobile {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .hide-on-mobile {
+                display: none;
+            }
+            
+            .show-on-mobile {
+                display: block;
+            }
+        }
+    </style>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Password Modal -->
+<div id="passwordModal" class="password-modal">
+    <div class="password-container">
+        <h2>TROXON <span>Electric</span></h2>
+        <p class="subtitle">Admin Panel - Secure Access</p>
+        
+        <div id="passwordSetup" style="display: none;">
+            <div class="warning">
+                <i class="fas fa-exclamation-triangle"></i> 
+                <strong>IMPORTANT:</strong> This password can only be set once and cannot be changed or recovered. Store it securely!
+            </div>
+            
+            <div class="password-requirements">
+                <strong>Password Requirements:</strong>
+                <ul>
+                    <li id="req-length">At least 10 characters</li>
+                    <li id="req-uppercase">At least one uppercase letter</li>
+                    <li id="req-lowercase">At least one lowercase letter</li>
+                    <li id="req-number">At least one number</li>
+                    <li id="req-special">At least one special character (!@#$%^&*)</li>
+                </ul>
+            </div>
+            
+            <div class="form-group">
+                <label for="newPassword">Set Permanent Password</label>
+                <div class="password-input-group">
+                    <input type="password" id="newPassword" placeholder="Enter new password (min. 10 characters)" autocomplete="off">
+                    <button type="button" class="toggle-password" id="toggleNewPassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-strength-meter">
+                    <div class="password-strength-fill" id="passwordStrength"></div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <div class="password-input-group">
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" autocomplete="off">
+                    <button type="button" class="toggle-password" id="toggleConfirmPassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button id="setPasswordBtn" class="btn-success" disabled>
+                <i class="fas fa-lock"></i> SET PERMANENT PASSWORD
+            </button>
+        </div>
+        
+        <div id="passwordLogin">
+            <div class="form-group">
+                <label for="password">Enter Admin Password</label>
+                <div class="password-input-group">
+                    <input type="password" id="password" placeholder="Enter password" autocomplete="off">
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button id="loginBtn" class="btn-success">
+                <i class="fas fa-sign-in-alt"></i> ACCESS ADMIN PANEL
+            </button>
+        </div>
+        
+        <div id="passwordStatus" style="text-align: center; margin-top: 15px; min-height: 20px; color: var(--danger);"></div>
+    </div>
+</div>
+
+<!-- Main Admin Content (Hidden until password verified) -->
+<div class="admin-container" id="adminContent">
+    <header>
+        <div class="logo-container">
+            <img src="troxon.png" alt="Troxon Electric Logo" class="logo-icon">
+        </div>
+        <h1>TROXON <span>Electric</span></h1>
+        <p class="subtitle">Admin Panel - Manage Your Products</p>
+    </header>
+    
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="upload">Upload Product</button>
+        <button class="tab-btn" data-tab="manage">Manage Products</button>
+        <button class="tab-btn" data-tab="stats">Statistics</button>
+    </div>
+    
+    <!-- Messages Container -->
+    <div id="messages-container"></div>
+    
+    <!-- Upload Tab -->
+    <div id="upload-tab" class="tab-content active">
+        <div class="admin-card">
+            <h2><i class="fas fa-upload"></i> Upload New Product</h2>
+            
+            <div class="form-group">
+                <label for="file-picker" class="required">Product Image</label>
+                <div class="file-input-container">
+                    <input type="file" id="file-picker" accept="image/*">
+                    <label for="file-picker" class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt"></i> Choose Product Image
+                    </label>
+                </div>
+                <div class="file-name" id="file-name">No file chosen</div>
+            </div>
+            
+            <img id="preview" src="" alt="Image Preview">
+            
+            <div class="form-group">
+                <label for="item-title" class="required">Product Name</label>
+                <input type="text" id="item-title" placeholder="Enter product name (e.g., Solar Inverter 5kW)">
+            </div>
+            
+            <div class="form-group">
+                <label for="item-price" class="required">Price</label>
+                <input type="text" id="item-price" placeholder="Enter price (e.g., 1,200,000 UGX)">
+            </div>
+            
+            <div class="form-group">
+                <label for="item-category" class="required">Category</label>
+                <select id="item-category">
+                    <option value="">Select Category</option>
+                    <option value="Solar Energy Solutions">Solar Energy Solutions</option>
+                    <option value="Power Systems (Electrical Engineering)">Power Systems (Electrical Engineering)</option>
+                    <option value="Security Systems">Security Systems</option>
+                    <option value="Electric Fence">Electric Fence</option>
+                    <option value="CCTV">CCTV</option>
+                    <option value="Automation Solutions">Automation Solutions</option>
+                    <option value="ICT Systems">ICT Systems</option>
+                    <option value="IoT (Internet of Things) Systems">IoT (Internet of Things) Systems</option>
+                    <option value="Electro-mechanical Systems">Electro-mechanical Systems</option>
+                    <option value="Heating, Ventilation & Air Conditioning (HVAC)">Heating, Ventilation & Air Conditioning (HVAC)</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="item-desc">Description</label>
+                <textarea id="item-desc" rows="3" placeholder="Enter product description (features, specifications, applications, etc.)..."></textarea>
+            </div>
+            
+            <button id="submit-btn" class="btn-success">
+                <i class="fas fa-cloud-upload-alt"></i> UPLOAD PRODUCT
+            </button>
+            <p id="status"></p>
+        </div>
+    </div>
+    
+    <!-- Manage Products Tab -->
+    <div id="manage-tab" class="tab-content">
+        <div class="admin-card">
+            <h2><i class="fas fa-boxes"></i> Manage Products</h2>
+            <p>View and manage all uploaded products. Click delete to remove a product from the website.</p>
+            
+            <div id="products-container">
+                <div class="loading" id="loading-products">
+                    <div class="loading-spinner"></div>
+                    <p>Loading products...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Tab -->
+    <div id="stats-tab" class="tab-content">
+        <div class="admin-card">
+            <h2><i class="fas fa-chart-bar"></i> Statistics</h2>
+            
+            <div class="stats-grid" id="stats-container">
+                <div class="loading" id="loading-stats">
+                    <div class="loading-spinner"></div>
+                    <p>Loading statistics...</p>
+                </div>
+            </div>
+            
+            <div id="category-stats"></div>
+        </div>
+    </div>
+    
+    <!-- Back to Gallery Link -->
+    <div class="back-link">
+        <a href="gallery.html"><i class="fas fa-arrow-left"></i> Back to Product Gallery</a>
+    </div>
+</div>
+
+<script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { 
+        getFirestore, 
+        collection, 
+        addDoc, 
+        getDocs, 
+        deleteDoc, 
+        doc,
+        query,
+        orderBy,
+        getDoc,
+        setDoc,
+        updateDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyAsI6h7di4nOKvzp8SKo8t1ZdHBwxfQzYE",
+        authDomain: "troxon-9f02d.firebaseapp.com",
+        projectId: "troxon-9f02d",
+        storageBucket: "troxon-9f02d.firebasestorage.app",
+        messagingSenderId: "42257861348",
+        appId: "1:42257861348:web:a969bd22beb39088147af1",
+        measurementId: "G-NE864LXNDM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Cloudinary details
+    const CLOUD_NAME = "dopuutcka";
+    const UPLOAD_PRESET = "anubis5";
+
+    // Password System - Cloud-based in Firestore
+    const PASSWORD_COLLECTION = "admin_passwords";
+    const PASSWORD_DOC_ID = "troxon_admin_password";
+    const PASSWORD_SALT = 'TROXON_ELECTRIC_ADMIN_2024_SECURE_SALT_V2';
+    
+    // DOM Elements for Password System
+    const passwordModal = document.getElementById('passwordModal');
+    const adminContent = document.getElementById('adminContent');
+    const passwordSetup = document.getElementById('passwordSetup');
+    const passwordLogin = document.getElementById('passwordLogin');
+    const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const passwordInput = document.getElementById('password');
+    const setPasswordBtn = document.getElementById('setPasswordBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const passwordStatus = document.getElementById('passwordStatus');
+    const passwordStrength = document.getElementById('passwordStrength');
+    const reqLength = document.getElementById('req-length');
+    const reqUppercase = document.getElementById('req-uppercase');
+    const reqLowercase = document.getElementById('req-lowercase');
+    const reqNumber = document.getElementById('req-number');
+    const reqSpecial = document.getElementById('req-special');
+    
+    // Toggle password visibility
+    function setupPasswordToggle(buttonId, inputId) {
+        const button = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
+        
+        button.addEventListener('click', function() {
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+    }
+    
+    // Initialize password toggles
+    setupPasswordToggle('togglePassword', 'password');
+    setupPasswordToggle('toggleNewPassword', 'newPassword');
+    setupPasswordToggle('toggleConfirmPassword', 'confirmPassword');
+    
+    // Password validation function
+    function validatePassword(password) {
+        const requirements = {
+            length: password.length >= 10,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[!@#$%^&*]/.test(password)
+        };
+        
+        // Update requirement indicators
+        reqLength.classList.toggle('valid', requirements.length);
+        reqUppercase.classList.toggle('valid', requirements.uppercase);
+        reqLowercase.classList.toggle('valid', requirements.lowercase);
+        reqNumber.classList.toggle('valid', requirements.number);
+        reqSpecial.classList.toggle('valid', requirements.special);
+        
+        // Calculate strength
+        const validCount = Object.values(requirements).filter(v => v).length;
+        if (validCount <= 2) {
+            passwordStrength.className = 'password-strength-fill weak';
+        } else if (validCount <= 4) {
+            passwordStrength.className = 'password-strength-fill medium';
+        } else {
+            passwordStrength.className = 'password-strength-fill strong';
+        }
+        
+        // Enable/disable set button
+        const allValid = Object.values(requirements).every(v => v);
+        const passwordsMatch = newPasswordInput.value === confirmPasswordInput.value && newPasswordInput.value !== '';
+        
+        setPasswordBtn.disabled = !(allValid && passwordsMatch);
+        
+        return allValid;
+    }
+    
+    // Check if passwords match
+    function checkPasswordMatch() {
+        const match = newPasswordInput.value === confirmPasswordInput.value;
+        if (newPasswordInput.value && confirmPasswordInput.value) {
+            if (!match) {
+                passwordStatus.textContent = 'Passwords do not match!';
+                passwordStatus.style.color = 'var(--danger)';
+            } else {
+                passwordStatus.textContent = 'Passwords match ✓';
+                passwordStatus.style.color = 'var(--success)';
+            }
+        } else {
+            passwordStatus.textContent = '';
+        }
+        validatePassword(newPasswordInput.value);
+    }
+    
+    // Enhanced hash function with multiple iterations
+    async function hashPassword(password) {
+        const salt = PASSWORD_SALT;
+        const encoder = new TextEncoder();
+        
+        // Combine password with salt multiple times
+        let data = password + salt;
+        
+        // Perform multiple hashing iterations for better security
+        let hashBuffer;
+        for (let i = 0; i < 1000; i++) {
+            const dataBuffer = encoder.encode(data + i); // Add iteration counter
+            hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+            
+            // Convert hash to hex for next iteration
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            data = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
+        return data; // Final hash after 1000 iterations
+    }
+    
+    // Check if password is already set in Firestore
+    async function checkPasswordStatus() {
+        try {
+            const passwordDocRef = doc(db, PASSWORD_COLLECTION, PASSWORD_DOC_ID);
+            const passwordDoc = await getDoc(passwordDocRef);
+            
+            if (!passwordDoc.exists()) {
+                // First time - need to set password
+                passwordSetup.style.display = 'block';
+                passwordLogin.style.display = 'none';
+            } else {
+                // Password already set - need to login
+                passwordSetup.style.display = 'none';
+                passwordLogin.style.display = 'block';
+            }
+        } catch (error) {
+            console.error("Error checking password status:", error);
+            passwordStatus.textContent = 'Error connecting to server. Please refresh.';
+            passwordStatus.style.color = 'var(--danger)';
+        }
+    }
+    
+    // Set permanent password in Firestore
+    setPasswordBtn.addEventListener('click', async function() {
+        const password = newPasswordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        if (password !== confirmPassword) {
+            passwordStatus.textContent = 'Passwords do not match!';
+            passwordStatus.style.color = 'var(--danger)';
+            return;
+        }
+        
+        if (!validatePassword(password)) {
+            passwordStatus.textContent = 'Password does not meet requirements!';
+            passwordStatus.style.color = 'var(--danger)';
+            return;
+        }
+        
+        setPasswordBtn.disabled = true;
+        setPasswordBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Setting Password...';
+        passwordStatus.textContent = 'Setting up secure password...';
+        passwordStatus.style.color = 'var(--primary-blue)';
+        
+        try {
+            // Check if password already exists
+            const passwordDocRef = doc(db, PASSWORD_COLLECTION, PASSWORD_DOC_ID);
+            const existingDoc = await getDoc(passwordDocRef);
+            
+            if (existingDoc.exists()) {
+                throw new Error('Password has already been set. Cannot change it.');
+            }
+            
+            // Hash the password
+            const passwordHash = await hashPassword(password);
+            
+            // Store the hash permanently in Firestore
+            await setDoc(passwordDocRef, {
+                hash: passwordHash,
+                createdAt: serverTimestamp(),
+                isSet: true,
+                lastAccessed: null
+            });
+            
+            // Hide modal and show admin content
+            passwordModal.style.display = 'none';
+            adminContent.style.display = 'block';
+            
+            // Show confirmation
+            showMessage('success', 'Permanent password has been set successfully! You can now access the admin panel from any device using this password.');
+            
+            // Initialize admin panel
+            initializeAdminPanel();
+            
+        } catch (error) {
+            console.error("Error setting password:", error);
+            passwordStatus.textContent = error.message || 'Failed to set password. Please try again.';
+            passwordStatus.style.color = 'var(--danger)';
+            setPasswordBtn.disabled = false;
+            setPasswordBtn.innerHTML = '<i class="fas fa-lock"></i> SET PERMANENT PASSWORD';
+        }
+    });
+    
+    // Login with password
+    loginBtn.addEventListener('click', async function() {
+        const password = passwordInput.value;
+        
+        if (!password) {
+            passwordStatus.textContent = 'Please enter password';
+            passwordStatus.style.color = 'var(--danger)';
+            return;
+        }
+        
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+        
+        try {
+            // Get stored hash from Firestore
+            const passwordDocRef = doc(db, PASSWORD_COLLECTION, PASSWORD_DOC_ID);
+            const passwordDoc = await getDoc(passwordDocRef);
+            
+            if (!passwordDoc.exists()) {
+                throw new Error('Password not found. Please set up a password first.');
+            }
+            
+            const storedHash = passwordDoc.data().hash;
+            const inputHash = await hashPassword(password);
+            
+            if (inputHash === storedHash) {
+                // Correct password - update last accessed time
+                await updateDoc(passwordDocRef, {
+                    lastAccessed: serverTimestamp()
+                });
+                
+                // Hide modal and show admin content
+                passwordModal.style.display = 'none';
+                adminContent.style.display = 'block';
+                
+                // Initialize admin panel
+                initializeAdminPanel();
+            } else {
+                // Wrong password
+                passwordStatus.textContent = 'Incorrect password!';
+                passwordStatus.style.color = 'var(--danger)';
+                passwordInput.value = '';
+                
+                // Shake animation for wrong password
+                passwordInput.style.animation = 'none';
+                setTimeout(() => {
+                    passwordInput.style.animation = 'shake 0.5s';
+                }, 10);
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            passwordStatus.textContent = error.message || 'Login failed. Please try again.';
+            passwordStatus.style.color = 'var(--danger)';
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> ACCESS ADMIN PANEL';
+        }
+    });
+    
+    // Enter key support
+    passwordInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            loginBtn.click();
+        }
+    });
+    
+    newPasswordInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            setPasswordBtn.click();
+        }
+    });
+    
+    confirmPasswordInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            setPasswordBtn.click();
+        }
+    });
+    
+    // Event listeners for password validation
+    newPasswordInput.addEventListener('input', function() {
+        validatePassword(this.value);
+        checkPasswordMatch();
+    });
+    
+    confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+    
+    // Check password status on load
+    document.addEventListener('DOMContentLoaded', function() {
+        checkPasswordStatus();
+        
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Handle responsive behavior
+        handleResponsive();
+    });
+    
+    // Handle window resize for responsive design
+    function handleResponsive() {
+        window.addEventListener('resize', function() {
+            // Update any responsive elements if needed
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile) {
+                document.body.classList.add('mobile-view');
+            } else {
+                document.body.classList.remove('mobile-view');
+            }
+        });
+    }
+
+    // Troxon Electric categories (UPDATED with Electric Fence and CCTV)
+    const productCategories = [
+        "Solar Energy Solutions",
+        "Power Systems (Electrical Engineering)",
+        "Security Systems",
+        "Electric Fence",
+        "CCTV",
+        "Automation Solutions",
+        "ICT Systems",
+        "IoT (Internet of Things) Systems",
+        "Electro-mechanical Systems",
+        "Heating, Ventilation & Air Conditioning (HVAC)",
+        "other"
+    ];
+
+    // App logic for admin panel
+    const filePicker = document.getElementById('file-picker');
+    const fileNameDisplay = document.getElementById('file-name');
+    const preview = document.getElementById('preview');
+    const submitBtn = document.getElementById('submit-btn');
+    const status = document.getElementById('status');
+    const productsContainer = document.getElementById('products-container');
+    const statsContainer = document.getElementById('stats-container');
+    const categoryStats = document.getElementById('category-stats');
+    const messagesContainer = document.getElementById('messages-container');
+
+    // Show message function
+    function showMessage(type, text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${text}`;
+        messageDiv.style.display = 'block';
+        
+        messagesContainer.appendChild(messageDiv);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transition = 'opacity 0.5s';
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 500);
+        }, 5000);
+    }
+
+    // Show preview when a file is picked
+    filePicker.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+            fileNameDisplay.textContent = file.name;
+            
+            // Auto-rotate if needed (for mobile images)
+            if (file.type.startsWith('image/')) {
+                const img = new Image();
+                img.onload = function() {
+                    if (img.width > img.height && img.width > 800) {
+                        preview.style.transform = 'rotate(0deg)';
+                    }
+                };
+                img.src = URL.createObjectURL(file);
+            }
+        }
+    });
+
+    // Tab switching functionality
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            
+            // Update active tab button
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Show active tab content
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === `${tabId}-tab`) {
+                    content.classList.add('active');
+                }
+            });
+            
+            // Load data for active tab
+            if (tabId === 'manage') {
+                loadProducts();
+            } else if (tabId === 'stats') {
+                loadStatistics();
+            }
+        });
+    });
+
+    // Upload product function
+    submitBtn.addEventListener('click', async () => {
+        const file = filePicker.files[0];
+        const title = document.getElementById('item-title').value.trim();
+        const price = document.getElementById('item-price').value.trim();
+        const category = document.getElementById('item-category').value;
+        const desc = document.getElementById('item-desc').value.trim();
+
+        // Validation
+        if (!file || !title || !price || !category) {
+            showMessage('error', "Please provide: Product Image, Product Name, Price, and Category.");
+            return;
+        }
+
+        // Additional validation for mobile
+        if (window.innerWidth <= 768 && file.size > 5 * 1024 * 1024) {
+            showMessage('error', "File size too large for mobile upload. Please use a smaller image (<5MB).");
+            return;
+        }
+
+        status.innerText = "Step 1: Uploading Image to Cloudinary...";
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> UPLOADING...';
+
+        try {
+            // UPLOAD TO CLOUDINARY
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', UPLOAD_PRESET);
+
+            const cloudResponse = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!cloudResponse.ok) {
+                throw new Error(`Cloudinary upload failed: ${cloudResponse.status}`);
+            }
+            
+            const cloudData = await cloudResponse.json();
+            const imageUrl = cloudData.secure_url;
+
+            // SAVE TO FIREBASE
+            status.innerText = "Step 2: Saving Product to Database...";
+            
+            const productData = {
+                title: title,
+                description: desc || "High-quality Electric product from Troxon Electric",
+                price: price,
+                category: category,
+                image: imageUrl,
+                createdAt: Date.now(),
+                business: "Troxon Electric",
+                admin_key: "TROXON_ADMIN_2024",
+                lastUpdated: serverTimestamp()
+            };
+
+            await addDoc(collection(db, "Electric_products"), productData);
+
+            // Show success message
+            showMessage('success', "Product uploaded successfully! It's now live in the gallery.");
+            
+            // Reset fields
+            document.getElementById('item-title').value = "";
+            document.getElementById('item-price').value = "";
+            document.getElementById('item-category').value = "";
+            document.getElementById('item-desc').value = "";
+            preview.style.display = 'none';
+            filePicker.value = "";
+            fileNameDisplay.textContent = "No file chosen";
+            status.innerText = "";
+
+            // Switch to manage tab and reload products
+            tabBtns[1].click();
+
+        } catch (error) {
+            console.error("Upload error:", error);
+            showMessage('error', "Upload failed: " + error.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> UPLOAD PRODUCT';
+        }
+    });
+
+    // Load and display all products
+    async function loadProducts() {
+        try {
+            productsContainer.innerHTML = `
+                <div class="loading" id="loading-products">
+                    <div class="loading-spinner"></div>
+                    <p>Loading products...</p>
+                </div>
+            `;
+            
+            const q = query(collection(db, "Electric_products"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                productsContainer.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No Products Yet</h3>
+                        <p>Upload your first product using the "Upload Product" tab.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let productsHTML = '<div class="products-grid">';
+            
+            querySnapshot.forEach((docSnapshot) => {
+                const product = docSnapshot.data();
+                const productId = docSnapshot.id;
+                
+                // Truncate description for mobile
+                let description = product.description || "Premium Electric product from Troxon Electric";
+                if (window.innerWidth <= 768 && description.length > 100) {
+                    description = description.substring(0, 100) + '...';
+                }
+                
+                productsHTML += `
+                    <div class="product-card" data-product-id="${productId}">
+                        <img src="${product.image}" alt="${product.title}" class="product-image" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjVmNWY1Ii8+CjxwYXRoIGQ9Ik01MCA3NUwxMDAgMTI1TDE1MCA3NSIgc3Ryb2tlPSIjMWE3M2U4IiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTc1IDUwVjE1MCIgc3Ryb2tlPSIjMWE3M2U4IiBzdHJva2Utd2lkdGg9IjIiLz4KPHJlY3QgeD0iNTAiIHk9IjUwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMGE3M2U4IiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+Cg=='">
+                        <div class="product-info">
+                            <div class="product-title">${product.title}</div>
+                            <div class="product-price">${product.price}</div>
+                            <span class="product-category">${product.category}</span>
+                            <div class="product-description">${description}</div>
+                            <div class="product-actions">
+                                <button class="btn-danger delete-btn" data-product-id="${productId}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            productsHTML += '</div>';
+            productsContainer.innerHTML = productsHTML;
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const productId = btn.getAttribute('data-product-id');
+                    const productCard = btn.closest('.product-card');
+                    const productName = productCard.querySelector('.product-title').textContent;
+                    
+                    if (confirm(`Are you sure you want to delete "${productName}"? This action cannot be undone.`)) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                        
+                        try {
+                            await deleteDoc(doc(db, "Electric_products", productId));
+                            
+                            // Remove from UI with animation
+                            productCard.style.opacity = '0.5';
+                            productCard.style.transform = 'scale(0.95)';
+                            productCard.style.transition = 'all 0.3s';
+                            
+                            setTimeout(() => {
+                                productCard.remove();
+                                showMessage('success', `Product "${productName}" deleted successfully.`);
+                                
+                                // Check if any products left
+                                const remainingProducts = document.querySelectorAll('.product-card');
+                                if (remainingProducts.length === 0) {
+                                    productsContainer.innerHTML = `
+                                        <div class="no-products">
+                                            <i class="fas fa-box-open"></i>
+                                            <h3>No Products Available</h3>
+                                            <p>All products have been deleted. Upload new products using the "Upload Product" tab.</p>
+                                        </div>
+                                    `;
+                                }
+                                
+                                // Update statistics
+                                loadStatistics();
+                            }, 300);
+                            
+                        } catch (error) {
+                            console.error("Delete error:", error);
+                            showMessage('error', "Failed to delete product: " + error.message);
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                        }
+                    }
+                });
+            });
+            
+        } catch (error) {
+            console.error("Load products error:", error);
+            productsContainer.innerHTML = `
+                <div class="no-products">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error Loading Products</h3>
+                    <p>Unable to load products: ${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    // Load statistics
+    async function loadStatistics() {
+        try {
+            statsContainer.innerHTML = `
+                <div class="loading" id="loading-stats">
+                    <div class="loading-spinner"></div>
+                    <p>Loading statistics...</p>
+                </div>
+            `;
+            
+            const querySnapshot = await getDocs(collection(db, "Electric_products"));
+            const totalProducts = querySnapshot.size;
+            
+            // Count by category
+            const categoryCount = {};
+            productCategories.forEach(category => {
+                categoryCount[category] = 0;
+            });
+            
+            querySnapshot.forEach((doc) => {
+                const product = doc.data();
+                const category = product.category || 'other';
+                if (categoryCount[category] !== undefined) {
+                    categoryCount[category]++;
+                } else {
+                    categoryCount['other']++;
+                }
+            });
+            
+            // Update stats container
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalProducts}</div>
+                    <div class="stat-label">Total Products</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${productCategories.length}</div>
+                    <div class="stat-label">Product Categories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Object.values(categoryCount).filter(count => count > 0).length}</div>
+                    <div class="stat-label">Active Categories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Math.max(...Object.values(categoryCount))}</div>
+                    <div class="stat-label">Most in Category</div>
+                </div>
+            `;
+            
+            // Show category breakdown
+            let categoryHTML = '<div style="margin-top: 30px;">';
+            categoryHTML += '<h3 style="color: var(--primary-blue); margin-bottom: 20px; border-bottom: 2px solid var(--light-gray); padding-bottom: 10px;">Category Breakdown</h3>';
+            categoryHTML += '<div style="background: var(--white); border-radius: 8px; padding: 20px; border: 1px solid var(--medium-gray); box-shadow: var(--card-shadow);">';
+            
+            // Create responsive grid for categories
+            const gridStyle = window.innerWidth <= 768 ? 
+                'display: block;' : 
+                'display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;';
+            
+            categoryHTML += `<div style="${gridStyle}">`;
+            
+            productCategories.forEach(category => {
+                const count = categoryCount[category] || 0;
+                if (count > 0) {
+                    categoryHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(26, 115, 232, 0.05); border-radius: 6px; border: 1px solid var(--medium-gray); margin-bottom: ${window.innerWidth <= 768 ? '10px' : '0'};">
+                            <span style="color: var(--text-dark); font-weight: 500;">${category}</span>
+                            <span style="font-weight: bold; color: var(--primary-blue); background: rgba(26, 115, 232, 0.1); padding: 4px 12px; border-radius: 20px;">${count}</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            categoryHTML += '</div></div></div>';
+            categoryStats.innerHTML = categoryHTML;
+            
+        } catch (error) {
+            console.error("Load statistics error:", error);
+            statsContainer.innerHTML = `
+                <div class="no-products">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error Loading Statistics</h3>
+                    <p>Unable to load statistics: ${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    // Initialize admin panel after password verification
+    function initializeAdminPanel() {
+        // Load initial data
+        loadProducts();
+        loadStatistics();
+        
+        // Add input validation
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value.trim() !== '') {
+                    input.style.borderColor = 'var(--primary-blue)';
+                }
+            });
+        });
+        
+        // Make functions available globally for debugging
+        window.adminPanel = {
+            loadProducts,
+            loadStatistics,
+            showMessage,
+            db
+        };
+    }
+
+    // Auto load data when admin panel becomes visible (after password)
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                if (adminContent.style.display !== 'none') {
+                    initializeAdminPanel();
+                }
+            }
+        });
+    });
+    
+    observer.observe(adminContent, { attributes: true });
+</script>
+
+</body>
+</html>
