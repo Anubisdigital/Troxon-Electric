@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Troxon Electric</title>
+    <link rel="icon" type="image/png" href="troxon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --primary-green: #34a853;
+            --dark: #1a1a1a;
+            --light-gray: #f4f7f6;
+            --border: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-box img {
+            height: 40px;
+        }
+
+        .logo-box span {
+            font-weight: 800;
+            color: var(--primary-blue);
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: 0.3s;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .desktop-nav a:hover {
+            color: var(--primary-blue);
+            background-color: rgba(26, 115, 232, 0.05);
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav-container {
+            display: none;
+            position: relative;
+        }
+
+        .hamburger {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .mobile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            width: 200px;
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            overflow: hidden;
+        }
+
+        .mobile-dropdown.active {
+            display: flex;
+        }
+
+        .mobile-dropdown a {
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            border-bottom: 1px solid #f0f0f0;
+            transition: 0.3s;
+        }
+
+        .mobile-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-dropdown a:hover {
+            background-color: rgba(26, 115, 232, 0.05);
+            color: var(--primary-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue), #0d47a1);
+            color: white;
+            padding: 100px 5%;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Blog Content Container - NO BOXES */
+        .blog-content-container {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+        }
+
+        /* Blog Post - NO BOX, NO CARD STYLING */
+        .blog-post {
+            margin-bottom: 80px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            width: 100%;
+        }
+
+        /* HUGE HEADING - NO BOX */
+        .blog-post h1 {
+            color: #000;
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 0 0 30px 0;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+        }
+
+        .blog-post h2 {
+            color: #000;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 50px 0 25px 0;
+            line-height: 1.2;
+        }
+
+        .blog-post h3 {
+            color: #000;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 40px 0 20px 0;
+            line-height: 1.3;
+        }
+
+        .blog-post p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #333;
+            max-width: 100%;
+        }
+
+        .blog-post ul, .blog-post ol {
+            margin-bottom: 30px;
+            padding-left: 25px;
+            max-width: 100%;
+        }
+
+        .blog-post li {
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            line-height: 1.7;
+        }
+
+        /* FULL-WIDTH IMAGE - NO BOX, NO CARD */
+        .blog-image-full {
+            width: 100%;
+            height: auto;
+            margin: 40px 0;
+            display: block;
+            border-radius: 0;
+            box-shadow: none;
+            max-width: 100%;
+        }
+
+        /* Blog Grid for Listing - NO BOXES */
+        .blog-list-container {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+        }
+
+        .blog-list-item {
+            margin-bottom: 70px;
+            padding-bottom: 70px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .blog-list-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .blog-list-image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 30px;
+            border-radius: 0;
+            display: block;
+        }
+
+        .blog-list-title {
+            color: #000;
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 0 0 20px 0;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .blog-list-excerpt {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 20px;
+            max-width: 100%;
+        }
+
+        .read-more-link {
+            display: inline-block;
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .read-more-link:hover {
+            color: var(--primary-green);
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 70px 5%;
+            text-align: center;
+        }
+
+        footer h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+
+        footer > p {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.05rem;
+        }
+
+        .copyright {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* Loading Spinner */
+        #loading-spinner {
+            text-align: center;
+            padding: 80px;
+            font-size: 1.3rem;
+            color: #666;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .blog-post h1, .blog-list-title {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .blog-post h1, .blog-list-title {
+                font-size: 3rem;
+            }
+            
+            .blog-post h2 {
+                font-size: 2.2rem;
+            }
+            
+            .hero {
+                padding: 80px 5%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none;
+            }
+            
+            .mobile-nav-container {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .blog-post h1, .blog-list-title {
+                font-size: 2.5rem;
+            }
+            
+            .blog-post h2 {
+                font-size: 2rem;
+            }
+            
+            .blog-post h3 {
+                font-size: 1.6rem;
+            }
+            
+            .blog-post p, .blog-list-excerpt {
+                font-size: 1.1rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+            
+            .hero {
+                padding: 70px 5%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .blog-post h1, .blog-list-title {
+                font-size: 2.2rem;
+            }
+            
+            .blog-post h2 {
+                font-size: 1.8rem;
+            }
+            
+            .blog-post h3 {
+                font-size: 1.4rem;
+            }
+            
+            .blog-post p, .blog-list-excerpt {
+                font-size: 1.05rem;
+            }
+            
+            .hero {
+                padding: 60px 5%;
+            }
+            
+            .blog-content-container, .blog-list-container {
+                padding: 0 20px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .blog-post h1, .blog-list-title {
+                font-size: 2rem;
+            }
+            
+            .logo-box span {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo-box">
+            <img src="troxon.png" alt="Troxon Logo">
+            <span>TROXON ELECTRIC</span>
+        </a>
+        
+        <div class="desktop-nav">
+            <a href="index.html">Home</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="blog.html" style="color: var(--primary-blue);">Blog</a>
+            <a href="contact.html">Contact</a>
+            <a href="about.html">About</a>
+        </div>
+        
+        <div class="mobile-nav-container">
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="mobile-dropdown" id="mobileDropdown">
+                <a href="index.html">Home</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="blog.html" style="color: var(--primary-blue);">Blog</a>
+                <a href="contact.html">Contact</a>
+                <a href="about.html">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>ENGINEERING INSIGHTS</h1>
+        <p>Latest technical articles, industry news, and engineering breakthroughs from Troxon Electric</p>
+    </div>
+
+    <!-- Blog Listing Page - Shows all blog posts -->
+    <main class="blog-list-container" id="blog-grid">
+        <div id="loading-spinner">
+            <i class="fas fa-spinner fa-spin" style="margin-right: 15px;"></i>
+            Loading articles...
+        </div>
+    </main>
+
+    <!--
+    SINGLE BLOG POST EXAMPLE (for when user clicks on a blog post)
+    Uncomment this and remove the blog-list-container above if you want to show a single post
+    <main class="blog-content-container">
+        <article class="blog-post">
+            <h1>THE FUTURE OF SMART GRID TECHNOLOGY IN MODERN CITIES</h1>
+            
+            <p>Smart grid technology represents a revolutionary approach to managing electricity distribution in the 21st century. As urban populations continue to grow and energy demands increase, traditional electrical grids are becoming inadequate to meet modern requirements. This article explores how smart grid technology is transforming urban energy infrastructure.</p>
+            
+            <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Smart Grid Technology" class="blog-image-full">
+            
+            <h2>WHAT MAKES A GRID "SMART"?</h2>
+            <p>A smart grid integrates digital technology with the electrical infrastructure, allowing for two-way communication between utilities and consumers. This enables real-time monitoring, automated control, and improved efficiency across the entire energy system. Unlike traditional grids, smart grids can automatically detect and respond to problems, reducing outage times and improving reliability.</p>
+            
+            <h2>KEY BENEFITS OF SMART GRID IMPLEMENTATION</h2>
+            <ul>
+                <li><strong>Enhanced Reliability:</strong> Smart grids can detect and respond to problems automatically, reducing outage times by up to 50%.</li>
+                <li><strong>Improved Efficiency:</strong> Real-time data allows for better load balancing and reduced energy waste, saving millions in operational costs.</li>
+                <li><strong>Integration of Renewable Energy:</strong> Smart grids can efficiently incorporate solar, wind, and other renewable sources into the energy mix.</li>
+                <li><strong>Consumer Empowerment:</strong> Users gain insight into their energy consumption patterns and can make informed decisions to reduce costs.</li>
+            </ul>
+            
+            <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Electrical Infrastructure" class="blog-image-full">
+            
+            <h2>IMPLEMENTATION CHALLENGES</h2>
+            <p>While the benefits are clear, implementing smart grid technology comes with significant challenges. These include high initial investment costs, cybersecurity concerns, and the need for updated regulatory frameworks. However, the long-term benefits far outweigh these initial hurdles, with most smart grid projects paying for themselves within 5-7 years through operational savings.</p>
+            
+            <h2>LOOKING AHEAD</h2>
+            <p>As technology continues to advance, smart grids will become increasingly sophisticated. The integration of artificial intelligence and machine learning will enable predictive maintenance and even more efficient energy distribution. Cities that invest in this technology today will be better prepared for the energy demands of tomorrow, creating more resilient and sustainable urban environments for future generations.</p>
+        </article>
+    </main>
+    -->
+
+    <footer>
+        <h3>TROXON ELECTRIC</h3>
+        <p>Professional Electrical Engineering Solutions for Residential, Commercial, and Industrial Applications Across Uganda</p>
+        <div class="contact-info">
+            <div class="info-item"><i class="fas fa-map-marker-alt"></i> Ntinda, Kampala, Uganda</div>
+            <div class="info-item"><i class="fas fa-phone"></i> +256-705-215444</div>
+            <div class="info-item"><i class="fas fa-envelope"></i> info@troxonelectric.com</div>
+            <div class="info-item"><i class="fas fa-globe"></i> www.troxonelectric.com</div>
+        </div>
+        <p class="copyright">&copy; 2024 Troxon Electric. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE7IKTk4ozvMXzTTw6NIxQePod0z0QZKY",
+            authDomain: "troxon2-64eb1.firebaseapp.com",
+            projectId: "troxon2-64eb1",
+            storageBucket: "troxon2-64eb1.firebasestorage.app",
+            messagingSenderId: "271832425060",
+            appId: "1:271832425060:web:3553440320ecb7be56b571"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Mobile dropdown toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileDropdown = document.getElementById('mobileDropdown');
+
+        hamburger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            mobileDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!mobileDropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                mobileDropdown.classList.remove('active');
+            }
+        });
+
+        async function loadBlogs() {
+            const blogGrid = document.getElementById('blog-grid');
+            try {
+                const q = query(collection(db, "blogs"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                blogGrid.innerHTML = ''; // Clear spinner
+
+                if (querySnapshot.empty) {
+                    blogGrid.innerHTML = '<div style="text-align:center; padding: 100px; font-size: 1.3rem; color: #666;">No blog posts available yet. Check back soon for updates!</div>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    
+                    // Use the first image from the array, or a fallback
+                    const imageSrc = (data.images && data.images.length > 0) ? data.images[0] : 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80';
+
+                    // Truncate body text for preview
+                    const previewText = data.body.length > 250 ? data.body.substring(0, 250) + '...' : data.body;
+
+                    const blogItem = `
+                        <article class="blog-list-item">
+                            <img src="${imageSrc}" alt="${data.title}" class="blog-list-image">
+                            <h1 class="blog-list-title">${data.title.toUpperCase()}</h1>
+                            <p class="blog-list-excerpt">${previewText}</p>
+                            <a href="#" class="read-more-link">READ FULL ARTICLE →</a>
+                        </article>
+                    `;
+                    blogGrid.innerHTML += blogItem;
+                });
+            } catch (error) {
+                console.error("Error loading blogs: ", error);
+                blogGrid.innerHTML = '<div style="text-align:center; padding: 100px; color: #d32f2f; font-size: 1.2rem;">Error loading content. Please check your connection and try again.</div>';
+            }
+        }
+
+        loadBlogs();
+    </script>
+</body>
+</html>
