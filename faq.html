@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ | Troxon Electric</title>
+    <link rel="icon" type="image/png" href="troxon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --primary-green: #34a853;
+            --primary-red: #ea4335;
+            --dark: #1a1a1a;
+            --light-gray: #f4f7f6;
+            --border: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-box img {
+            height: 40px;
+        }
+
+        .logo-box span {
+            font-weight: 800;
+            color: var(--primary-blue);
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+        }
+
+        .desktop-nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: 0.3s;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .desktop-nav a:hover {
+            color: var(--primary-blue);
+            background-color: rgba(26, 115, 232, 0.05);
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav-container {
+            display: none;
+            position: relative;
+        }
+
+        .hamburger {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .mobile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            width: 200px;
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            overflow: hidden;
+        }
+
+        .mobile-dropdown.active {
+            display: flex;
+        }
+
+        .mobile-dropdown a {
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            border-bottom: 1px solid #f0f0f0;
+            transition: 0.3s;
+        }
+
+        .mobile-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-dropdown a:hover {
+            background-color: rgba(26, 115, 232, 0.05);
+            color: var(--primary-blue);
+        }
+
+        /* Hero Section - BIG HEADINGS */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue), #0d47a1);
+            color: white;
+            padding: 120px 5%;
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 25px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* FAQ Container */
+        .faq-container {
+            max-width: 1000px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 60px;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 22px 70px 22px 30px;
+            font-size: 1.3rem;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 5px 20px rgba(26, 115, 232, 0.15);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            font-size: 1.5rem;
+        }
+
+        /* Search Results Info */
+        .search-info {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #666;
+            min-height: 28px;
+        }
+
+        .search-match {
+            background: #e3f2fd;
+            padding: 5px 15px;
+            border-radius: 8px;
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* FAQ Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .category-tab {
+            padding: 14px 35px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #555;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .category-tab:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .category-tab.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        /* FAQ Items - BIG HEADINGS */
+        .faq-item {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+        }
+
+        .faq-question {
+            padding: 30px 35px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #f9f9f9;
+        }
+
+        .faq-question i {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-answer {
+            padding: 0 35px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .faq-answer.active {
+            padding: 0 35px 35px;
+            max-height: 1000px;
+        }
+
+        /* FAQ Answer Content */
+        .faq-answer p {
+            margin-bottom: 20px;
+        }
+
+        .faq-answer ul, .faq-answer ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .faq-answer li {
+            margin-bottom: 10px;
+        }
+
+        .faq-answer img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* No Results - Redirect to Contact */
+        .no-results-redirect {
+            text-align: center;
+            padding: 80px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        }
+
+        .no-results-redirect h3 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            color: var(--dark);
+            font-weight: 800;
+        }
+
+        .no-results-redirect p {
+            font-size: 1.3rem;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto 35px;
+            line-height: 1.7;
+        }
+
+        .redirect-button {
+            display: inline-block;
+            background: var(--primary-green);
+            color: white;
+            padding: 20px 50px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .redirect-button:hover {
+            background: #2e7d32;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* Best Match Highlight */
+        .best-match {
+            border: 3px solid var(--primary-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 168, 83, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(52, 168, 83, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 168, 83, 0); }
+        }
+
+        /* Contact CTA */
+        .contact-cta {
+            background: linear-gradient(135deg, var(--primary-green), #2e7d32);
+            color: white;
+            padding: 80px 5%;
+            border-radius: 25px;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .contact-cta h2 {
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            font-weight: 900;
+        }
+
+        .contact-cta p {
+            font-size: 1.4rem;
+            max-width: 700px;
+            margin: 0 auto 35px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: var(--primary-green);
+            padding: 20px 50px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 80px;
+            color: #666;
+            font-size: 1.4rem;
+        }
+
+        .loading i {
+            margin-right: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 80px 5%;
+            text-align: center;
+            margin-top: 120px;
+        }
+
+        footer h3 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            font-weight: 900;
+        }
+
+        footer > p {
+            max-width: 700px;
+            margin: 0 auto 50px;
+            opacity: 0.8;
+            font-size: 1.3rem;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.2rem;
+        }
+
+        .copyright {
+            margin-top: 50px;
+            font-size: 1rem;
+            opacity: 0.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .hero h1 {
+                font-size: 4rem;
+            }
+            
+            .faq-question {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .hero {
+                padding: 100px 5%;
+            }
+            
+            .faq-question {
+                font-size: 1.3rem;
+                padding: 25px 30px;
+            }
+            
+            .contact-cta h2 {
+                font-size: 2.5rem;
+            }
+            
+            .search-box input {
+                padding: 20px 60px 20px 25px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none;
+            }
+            
+            .mobile-nav-container {
+                display: block;
+            }
+            
+            .hero {
+                padding: 80px 5%;
+                margin-bottom: 60px;
+            }
+            
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero p {
+                font-size: 1.3rem;
+            }
+            
+            .faq-container {
+                padding: 0 20px;
+            }
+            
+            .faq-question {
+                padding: 22px 25px;
+                font-size: 1.2rem;
+            }
+            
+            .faq-answer, .faq-answer.active {
+                padding-left: 25px;
+                padding-right: 25px;
+                font-size: 1.2rem;
+            }
+            
+            .category-tabs {
+                gap: 12px;
+                margin-bottom: 40px;
+            }
+            
+            .category-tab {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 25px;
+                align-items: center;
+            }
+            
+            .search-box input {
+                padding: 18px 50px 18px 20px;
+                font-size: 1.1rem;
+            }
+            
+            .contact-cta h2 {
+                font-size: 2.2rem;
+            }
+            
+            .cta-button, .redirect-button {
+                padding: 18px 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .contact-cta {
+                padding: 60px 20px;
+            }
+            
+            .contact-cta h2 {
+                font-size: 2rem;
+            }
+            
+            .cta-button, .redirect-button {
+                padding: 16px 35px;
+                font-size: 1.1rem;
+            }
+            
+            .search-box input {
+                padding: 16px 45px 16px 18px;
+                font-size: 1.1rem;
+            }
+            
+            .faq-question {
+                font-size: 1.1rem;
+                padding: 20px;
+            }
+            
+            .faq-answer, .faq-answer.active {
+                font-size: 1.1rem;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            
+            .no-results-redirect {
+                padding: 50px 20px;
+            }
+            
+            .no-results-redirect h3 {
+                font-size: 1.8rem;
+            }
+            
+            .no-results-redirect p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo-box span {
+                font-size: 1rem;
+            }
+            
+            .faq-question {
+                font-size: 1rem;
+            }
+            
+            .category-tab {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo-box">
+            <img src="troxon.png" alt="Troxon Logo">
+            <span>TROXON ELECTRIC</span>
+        </a>
+        
+        <div class="desktop-nav">
+            <a href="index.html">Home</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="blog.html">Blog</a>
+            <a href="faq.html" style="color: var(--primary-blue);">FAQ</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        
+        <div class="mobile-nav-container">
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="mobile-dropdown" id="mobileDropdown">
+                <a href="index.html">Home</a>
+                <a href="gallery.html">Gallery</a>
+                <a href="blog.html">Blog</a>
+                <a href="faq.html" style="color: var(--primary-blue);">FAQ</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>FREQUENTLY ASKED QUESTIONS</h1>
+        <p>Find detailed answers to common electrical engineering questions and solutions</p>
+    </div>
+
+    <main class="faq-container">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="faq-search" placeholder="Search for questions or topics...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="search-info" id="search-info"></div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs" id="category-tabs">
+            <button class="category-tab active" data-category="all">All Questions</button>
+            <button class="category-tab" data-category="residential">Residential</button>
+            <button class="category-tab" data-category="commercial">Commercial</button>
+            <button class="category-tab" data-category="industrial">Industrial</button>
+            <button class="category-tab" data-category="safety">Safety</button>
+            <button class="category-tab" data-category="installation">Installation</button>
+            <button class="category-tab" data-category="maintenance">Maintenance</button>
+        </div>
+
+        <!-- FAQ List -->
+        <div id="faq-list">
+            <div class="loading">
+                <i class="fas fa-spinner"></i> Loading FAQ content...
+            </div>
+        </div>
+
+        <!-- Contact CTA -->
+        <div class="contact-cta">
+            <h2>STILL HAVE QUESTIONS?</h2>
+            <p>Our team of electrical engineering experts is ready to provide detailed answers to your specific questions</p>
+            <a href="contact.html" class="cta-button">
+                <i class="fas fa-headset" style="margin-right: 10px;"></i> CONTACT OUR TEAM
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <h3>TROXON ELECTRIC</h3>
+        <p>Professional Electrical Engineering Solutions for Residential, Commercial, and Industrial Applications Across Uganda</p>
+        <div class="contact-info">
+            <div class="info-item"><i class="fas fa-map-marker-alt"></i> Ntinda, Kampala, Uganda</div>
+            <div class="info-item"><i class="fas fa-phone"></i> +256-705-215444</div>
+            <div class="info-item"><i class="fas fa-envelope"></i> info@troxonelectric.com</div>
+            <div class="info-item"><i class="fas fa-globe"></i> www.troxonelectric.com</div>
+        </div>
+        <p class="copyright">&copy; 2024 Troxon Electric. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE7IKTk4ozvMXzTTw6NIxQePod0z0QZKY",
+            authDomain: "troxon2-64eb1.firebaseapp.com",
+            projectId: "troxon2-64eb1",
+            storageBucket: "troxon2-64eb1.firebasestorage.app",
+            messagingSenderId: "271832425060",
+            appId: "1:271832425060:web:3553440320ecb7be56b571"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Mobile dropdown toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileDropdown = document.getElementById('mobileDropdown');
+
+        hamburger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            mobileDropdown.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!mobileDropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                mobileDropdown.classList.remove('active');
+            }
+        });
+
+        // FAQ data and functionality
+        let allFAQs = [];
+        let currentCategory = 'all';
+        let currentSearch = '';
+        let searchActive = false;
+
+        // Calculate similarity between two strings
+        function calculateSimilarity(str1, str2) {
+            str1 = str1.toLowerCase();
+            str2 = str2.toLowerCase();
+            
+            // Exact match
+            if (str1 === str2) return 100;
+            
+            // Contains match
+            if (str2.includes(str1) || str1.includes(str2)) return 90;
+            
+            // Split into words
+            const words1 = str1.split(/\s+/);
+            const words2 = str2.split(/\s+/);
+            
+            // Count matching words
+            let matchCount = 0;
+            for (const word1 of words1) {
+                if (word1.length < 3) continue; // Skip short words
+                for (const word2 of words2) {
+                    if (word2.includes(word1) || word1.includes(word2)) {
+                        matchCount++;
+                        break;
+                    }
+                }
+            }
+            
+            // Calculate percentage based on word matches
+            const similarity = (matchCount / Math.max(words1.length, words2.length)) * 100;
+            
+            // Bonus for partial word matches
+            for (const word1 of words1) {
+                if (word1.length < 4) continue;
+                for (const word2 of words2) {
+                    if (word1.length > 3 && word2.length > 3) {
+                        // Check for common electrical/technical terms
+                        const electricalTerms = ['solar', 'power', 'electric', 'voltage', 'current', 'wiring', 'installation', 'system', 'panel', 'circuit', 'generator', 'transformer'];
+                        if (electricalTerms.includes(word1) && electricalTerms.includes(word2)) {
+                            return Math.min(similarity + 20, 95);
+                        }
+                    }
+                }
+            }
+            
+            return similarity;
+        }
+
+        // Find best matching FAQ
+        function findBestMatch(searchQuery, faqs) {
+            if (!searchQuery.trim() || faqs.length === 0) return null;
+            
+            let bestMatch = null;
+            let highestScore = 0;
+            
+            for (const faq of faqs) {
+                // Check title similarity
+                const titleScore = calculateSimilarity(searchQuery, faq.title);
+                
+                // Check body similarity
+                const bodyScore = calculateSimilarity(searchQuery, faq.body.substring(0, 500)); // Only check first 500 chars
+                
+                // Take the higher score
+                const score = Math.max(titleScore, bodyScore);
+                
+                if (score > highestScore) {
+                    highestScore = score;
+                    bestMatch = { faq, score };
+                }
+            }
+            
+            return bestMatch;
+        }
+
+        // Auto-scroll to element
+        function scrollToElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                // Smooth scroll to element
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                
+                // Add highlight effect
+                element.style.transition = 'background-color 0.5s';
+                element.style.backgroundColor = '#e3f2fd';
+                
+                // Remove highlight after 2 seconds
+                setTimeout(() => {
+                    element.style.backgroundColor = '';
+                }, 2000);
+            }
+        }
+
+        // Load FAQs from Firebase
+        async function loadFAQs() {
+            const faqList = document.getElementById('faq-list');
+            
+            try {
+                const q = query(collection(db, "faqs"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    faqList.innerHTML = '<div class="no-results">No FAQs available yet. Please check back later.</div>';
+                    return;
+                }
+                
+                allFAQs = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    allFAQs.push({
+                        id: doc.id,
+                        title: data.title || 'Untitled Question',
+                        body: data.body || 'No answer provided',
+                        category: data.category || 'general',
+                        images: data.images || []
+                    });
+                });
+                
+                // Render FAQs
+                renderFAQs();
+                
+            } catch (error) {
+                console.error("Error loading FAQs: ", error);
+                faqList.innerHTML = '<div class="no-results" style="color: #ea4335;">Error loading FAQ content. Please try again later.</div>';
+            }
+        }
+
+        // Render FAQs based on filters
+        function renderFAQs() {
+            const faqList = document.getElementById('faq-list');
+            const searchInfo = document.getElementById('search-info');
+            
+            // Reset search info
+            searchInfo.innerHTML = '';
+            
+            // Filter FAQs based on category
+            let filteredFAQs = allFAQs.filter(faq => {
+                if (currentCategory !== 'all' && faq.category !== currentCategory) {
+                    return false;
+                }
+                return true;
+            });
+            
+            // If there's a search query, find best match
+            if (currentSearch.trim()) {
+                searchActive = true;
+                
+                // Find best match
+                const bestMatch = findBestMatch(currentSearch, filteredFAQs);
+                
+                if (bestMatch && bestMatch.score > 10) {
+                    // Show matching FAQ(s)
+                    const matchingFAQs = filteredFAQs.filter(faq => {
+                        const titleScore = calculateSimilarity(currentSearch, faq.title);
+                        const bodyScore = calculateSimilarity(currentSearch, faq.body.substring(0, 500));
+                        return Math.max(titleScore, bodyScore) > 10;
+                    });
+                    
+                    if (matchingFAQs.length > 0) {
+                        // Show search info
+                        searchInfo.innerHTML = `<span class="search-match">Found ${matchingFAQs.length} related question${matchingFAQs.length > 1 ? 's' : ''} for "${currentSearch}"</span>`;
+                        
+                        // Highlight best match
+                        let faqHTML = '';
+                        let bestMatchIndex = 0;
+                        
+                        matchingFAQs.forEach((faq, index) => {
+                            const isBestMatch = bestMatch.faq.id === faq.id;
+                            if (isBestMatch) bestMatchIndex = index;
+                            
+                            const hasImages = faq.images && faq.images.length > 0;
+                            let imagesHTML = '';
+                            
+                            if (hasImages) {
+                                faq.images.forEach(img => {
+                                    imagesHTML += `<img src="${img}" alt="FAQ illustration" style="max-width: 100%; height: auto; margin: 15px 0; border-radius: 8px;">`;
+                                });
+                            }
+                            
+                            const matchClass = isBestMatch ? 'best-match' : '';
+                            
+                            faqHTML += `
+                                <div class="faq-item ${matchClass}" id="faq-item-${index}">
+                                    <div class="faq-question" onclick="toggleFAQ(${index}, true)">
+                                        <span>${faq.title}</span>
+                                        <i class="fas fa-chevron-down" id="faq-icon-${index}"></i>
+                                    </div>
+                                    <div class="faq-answer" id="faq-answer-${index}">
+                                        ${faq.body}
+                                        ${imagesHTML}
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        faqList.innerHTML = faqHTML;
+                        
+                        // Auto-open the best match AND scroll to it
+                        setTimeout(() => {
+                            toggleFAQ(bestMatchIndex, true);
+                            // Auto-scroll to the best match
+                            scrollToElement(`faq-item-${bestMatchIndex}`);
+                        }, 300);
+                        
+                        return;
+                    }
+                }
+                
+                // No matches found - show contact redirect
+                searchInfo.innerHTML = `<span style="color: #ea4335; font-weight: 600;">No exact matches found for "${currentSearch}"</span>`;
+                faqList.innerHTML = `
+                    <div class="no-results-redirect">
+                        <h3>WE COULDN'T FIND AN ANSWER FOR "${currentSearch.toUpperCase()}"</h3>
+                        <p>Your question about <strong>"${currentSearch}"</strong> is specific and we don't have an exact match in our FAQ database.</p>
+                        <p>Our electrical engineering experts can provide you with a detailed, personalized answer to your specific question.</p>
+                        <p style="margin-top: 40px;">
+                            <a href="contact.html" class="redirect-button">
+                                <i class="fas fa-headset" style="margin-right: 10px;"></i> CONTACT US FOR A PERSONALIZED ANSWER
+                            </a>
+                        </p>
+                        <p style="margin-top: 40px; font-size: 1.1rem; color: #888;">
+                            Alternatively, you can try a broader search term or browse our categories above.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // No search query, show all FAQs
+            searchActive = false;
+            
+            if (filteredFAQs.length === 0) {
+                faqList.innerHTML = '<div class="no-results">No questions found in this category. Try selecting "All Questions".</div>';
+                return;
+            }
+            
+            let faqHTML = '';
+            
+            filteredFAQs.forEach((faq, index) => {
+                const hasImages = faq.images && faq.images.length > 0;
+                let imagesHTML = '';
+                
+                if (hasImages) {
+                    faq.images.forEach(img => {
+                        imagesHTML += `<img src="${img}" alt="FAQ illustration" style="max-width: 100%; height: auto; margin: 15px 0; border-radius: 8px;">`;
+                    });
+                }
+                
+                faqHTML += `
+                    <div class="faq-item" id="faq-item-${index}">
+                        <div class="faq-question" onclick="toggleFAQ(${index})">
+                            <span>${faq.title}</span>
+                            <i class="fas fa-chevron-down" id="faq-icon-${index}"></i>
+                        </div>
+                        <div class="faq-answer" id="faq-answer-${index}">
+                            ${faq.body}
+                            ${imagesHTML}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            faqList.innerHTML = faqHTML;
+            
+            // Initialize first FAQ as open
+            if (filteredFAQs.length > 0 && !searchActive) {
+                setTimeout(() => {
+                    toggleFAQ(0);
+                }, 100);
+            }
+        }
+
+        // Toggle FAQ open/close
+        window.toggleFAQ = (index, scrollTo = false) => {
+            const answer = document.getElementById(`faq-answer-${index}`);
+            const icon = document.getElementById(`faq-icon-${index}`);
+            const faqItem = document.getElementById(`faq-item-${index}`);
+            
+            if (answer.classList.contains('active')) {
+                answer.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+                if (faqItem) faqItem.classList.remove('best-match');
+            } else {
+                // Close all other FAQs
+                document.querySelectorAll('.faq-answer').forEach((faq, i) => {
+                    faq.classList.remove('active');
+                    const otherIcon = document.getElementById(`faq-icon-${i}`);
+                    if (otherIcon) otherIcon.style.transform = 'rotate(0deg)';
+                    const otherItem = document.getElementById(`faq-item-${i}`);
+                    if (otherItem) otherItem.classList.remove('best-match');
+                });
+                
+                // Open clicked FAQ
+                answer.classList.add('active');
+                icon.style.transform = 'rotate(180deg)';
+                if (faqItem && searchActive) faqItem.classList.add('best-match');
+                
+                // Auto-scroll if requested
+                if (scrollTo) {
+                    setTimeout(() => {
+                        scrollToElement(`faq-item-${index}`);
+                    }, 100);
+                }
+            }
+        };
+
+        // Category filter
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Update active tab
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update category
+                currentCategory = this.getAttribute('data-category');
+                
+                // Clear search if switching categories
+                document.getElementById('faq-search').value = '';
+                currentSearch = '';
+                
+                // Render filtered FAQs
+                renderFAQs();
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('faq-search');
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentSearch = this.value.trim();
+                if (currentSearch) {
+                    // Reset to all categories when searching
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelector('.category-tab[data-category="all"]').classList.add('active');
+                    currentCategory = 'all';
+                }
+                renderFAQs();
+            }, 500);
+        });
+
+        // Enter key to search
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                currentSearch = this.value.trim();
+                if (currentSearch) {
+                    // Reset to all categories when searching
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelector('.category-tab[data-category="all"]').classList.add('active');
+                    currentCategory = 'all';
+                }
+                renderFAQs();
+            }
+        });
+
+        // Initial load
+        loadFAQs();
+    </script>
+</body>
+</html>
