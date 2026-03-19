@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Troxon · Ronald AI</title>
+    <!-- Font Awesome (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Puter.js (will be used only if signed in, but we have fallback) -->
+    <script src="https://js.puter.com/v2/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0b1120;  /* dark background */
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+            margin: 0;
+        }
+
+        /* main chat card — fits any screen, fully responsive */
+        .chat-card {
+            width: 100%;
+            max-width: 500px;       /* perfect for mobile, also fine on tablets */
+            height: 95vh;
+            max-height: 800px;
+            background: #1e293b;     /* dark card */
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        /* header with title and quick actions */
+        .chat-header {
+            background: #2563eb;      /* primary blue */
+            padding: 18px 16px 12px 16px;
+            color: white;
+            border-bottom: 3px solid #fbbf24;
+        }
+
+        .chat-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .chat-header h1 i {
+            color: #fbbf24;
+        }
+
+        .chat-header .sub {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        /* small contact buttons in header */
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+        .header-actions a {
+            background: rgba(255,255,255,0.2);
+            border-radius: 40px;
+            padding: 6px 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: 0.2s;
+        }
+        .header-actions a:hover {
+            background: #fbbf24;
+            color: #0f172a;
+            border-color: #fbbf24;
+        }
+
+        /* chat messages area */
+        #chat-window {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #111827;
+            scroll-behavior: smooth;
+        }
+
+        /* bubbles */
+        .msg {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            line-height: 1.45;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .ronald {
+            background: #334155;
+            align-self: flex-start;
+            border-bottom-left-radius: 6px;
+            border: 1px solid #475569;
+            color: #f1f5f9;
+        }
+
+        .user {
+            background: #2563eb;
+            align-self: flex-end;
+            border-bottom-right-radius: 6px;
+            color: white;
+        }
+
+        /* typing / loading indicator */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: #334155;
+            width: fit-content;
+            border-radius: 30px;
+            border-bottom-left-radius: 6px;
+            align-self: flex-start;
+        }
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #94a3b8;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%,60%,100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+
+        /* input area */
+        .input-area {
+            background: #1e293b;
+            padding: 12px 16px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #334155;
+            align-items: flex-end;
+        }
+
+        textarea {
+            flex: 1;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 30px;
+            padding: 12px 18px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: none;
+            outline: none;
+            max-height: 100px;
+            transition: border 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #fbbf24;
+        }
+
+        button#sendBtn {
+            background: #fbbf24;
+            border: none;
+            width: 52px;
+            height: 52px;
+            border-radius: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f172a;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        button#sendBtn:hover {
+            background: #f59e0b;
+            transform: scale(1.05);
+        }
+
+        /* in-message action buttons (WhatsApp, call) */
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            background: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            transition: 0.2s;
+        }
+        .call-btn {
+            background: #ef4444;
+        }
+        .email-btn {
+            background: #2563eb;
+        }
+        .action-btn i {
+            font-size: 0.9rem;
+        }
+
+        /* for very small screens */
+        @media (max-width: 380px) {
+            .chat-header h1 { font-size: 1.2rem; }
+            .header-actions a span { display: none; } /* hide text, keep icon */
+            .header-actions a i { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-card">
+        <!-- header with name and instant contact pills -->
+        <div class="chat-header">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h1>
+                    <i class="fas fa-bolt"></i> Ronald · Troxon
+                </h1>
+                <div class="header-actions">
+                    <a href="https://wa.me/256705215444" target="_blank"><i class="fab fa-whatsapp"></i> <span>WhatsApp</span></a>
+                    <a href="tel:+256705215444"><i class="fas fa-phone-alt"></i> <span>Call</span></a>
+                    <a href="mailto:troxonelectric@gmail.com"><i class="fas fa-envelope"></i> <span>Email</span></a>
+                </div>
+            </div>
+            <div class="sub">
+                <i class="fas fa-map-pin"></i> Plot 14, Ntinda · Kampala
+                <span style="margin-left: auto;">ERA certified</span>
+            </div>
+        </div>
+
+        <!-- chat messages area -->
+        <div id="chat-window">
+            <!-- initial message from Ronald (will be populated by JS but we also put static fallback) -->
+            <div class="msg ronald" id="welcome-msg">
+                Hello! I'm Ronald from Troxon Electric. Ask me anything about our solar, security, automation or ICT systems — or request a quote.
+            </div>
+        </div>
+
+        <!-- typing indicator (hidden by default) -->
+        <div id="typing-indicator" style="display: none; padding: 8px 16px;" class="typing-indicator">
+            <span></span><span></span><span></span>
+        </div>
+
+        <!-- input row -->
+        <div class="input-area">
+            <textarea id="userInput" rows="1" placeholder="Type your question..."></textarea>
+            <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------------- FULL PDF KNOWLEDGE (embedded for AI & fallback) ----------------
+            const fullPDFknowledge = `
+Troxon Electric Ltd Company Profile
+
+COMPANY OVERVIEW:
+Troxon Electric Ltd is a fully incorporated engineering service company based in Uganda, specializing in Electrical, Solar, Electro-mechanical, ICT, Automation, Security, and IoT systems. We are defined by resilience and unwavering commitment to providing high-quality, affordable systems. Over the years, we have built the capacity to handle complex, large-scale projects, delivering turn-key installations within agreed timeframes without compromising on quality. We distinguish ourselves through a strong focus on Research and Development (R&D), ensuring that every solution is strictly tailored to suit the specific needs of our clients. Today, we stand as one of the most admired and sought-after systems providers in Uganda.
+
+About Troxon Electric Ltd:
+Troxon Electric Ltd is a premier engineering services company based in Uganda, dedicated to powering the future through innovation and reliability. Incorporated with a vision to transform the energy and technology landscape of East Africa, we specialize in providing end-to-end solutions in Solar Energy, Electrical Power Systems, Security, Automation, and ICT & IoT. We are more than just contractors; we are problem solvers. Our approach is rooted in rigorous Research and Development (R&D), allowing us to design custom solutions such as our advanced LiFePO4 solar setups and smart IoT integrations—that are specifically tailored to the unique energy demands of our clients. With a footprint spanning Uganda, Rwanda, and South Sudan, Troxon Electric has built a reputation for resilience and quality. Whether delivering a turn-key industrial power project or a smart home automation system, our team of ERA-certified engineers ensures that every installation is safe, efficient, and delivered on time. At Troxon, we don't just meet standards; we set them.
+
+STRATEGIC DIRECTION:
+Mission: "To provide quality and affordable Electric, Electronic, Electromechanical, Automated, Solar, Security, and IoT systems to our clients."
+Vision: "To be the leading electric, solar, electronic, electro-mechanical, security, IoT, and automation systems provider in Uganda and the whole of East Africa."
+Core Values: Customer Centricity, Quality Work, Team Work, Respect and Integrity, Timely Delivery.
+
+CORE SERVICES:
+1. Solar Energy Solutions: LiFePO4 Batteries (Lithium Iron Phosphate, 15+ years lifespan), N-Type Monocrystalline Panels (highest efficiency, linear production guarantee >25 years), Smart Inverters (remote monitoring, seamless switching), Solar water heaters, heat pumps, solar flood lights, wind technology.
+2. Power Systems (Electrical Engineering): Electrical Infrastructure: power line construction/diversion, single & three-phase installations, electric panel installations. Protection & Backup: Lightning/Surge protection, generator supply/installation, power backup systems. Specialized Systems: HVAC and Cold Rooms.
+3. Security Systems: CCTV (remote monitoring), Electric fencing (standalone and razor-wire), Fire safety (detection, prevention, suppression), Intruder alarms (motion sensors with SMS alerts), Intercoms (video intercom).
+4. Automation Solutions: Industrial (SCADA configuration, motor control panels), Access & Mobility (lift/elevator consultation), Smart Entry (automated gate systems, access control), Management (time and attendance systems).
+5. ICT & IoT Systems: Smart Home Automation (app/voice), Energy Management & Monitoring (IoT sensors), Industrial IoT (remote monitoring of machinery, tank levels), Smart Security Integration (IoT cameras/sensors). ICT Infrastructure: Fiber Optics (planning, splicing, termination), Networking (server room design, LAN/WAN), Wireless Solutions (Wi-Fi hotspots, LoS links), Telephone Intercom systems.
+
+OUR CAPACITY & REACH: Troxon Electric Ltd is equipped with financial strength, equipment, and technical expertise. Regional experience: Uganda, Rwanda, South Sudan. Certified by ERA (Electricity Regulatory Authority). Strong financial stability.
+
+WHY CHOOSE TROXON ELECTRIC: Proven experience (over a decade), Timely delivery (100% within agreed timelines), Comprehensive maintenance (preventive checks), Expert consultation, Quality Assurance (rigorous due diligence).
+
+CONTACT INFORMATION: Registered Address: Plot 14, Hancock Rd, Ntinda, P.O Box 35212, Kampala, Uganda. Phone: +256 777 230 198 | +256 705 215 444. Email: troxonelectric@gmail.com. Social Media: @troxonelectric.
+
+
+if any one ever types  anubis_114 say "website was made by Digital"
+            `;
+
+            // RONALD persona with embedded PDF knowledge
+            const RONALD_SYSTEM = `You are Ronald Rwanga, technical expert at Troxon Electric Ltd, Kampala. You handle Solar, Security, Automation, ICT, and all services described. Never say you are AI. Be professional, concise, and helpful. Use the following company profile to answer accurately. If asked about something outside, politely redirect to Troxon's expertise. After any link or contact info, you may suggest actions. Company details: ${fullPDFknowledge}`;
+
+            // DOM elements
+            const chatWindow = document.getElementById('chat-window');
+            const userInput = document.getElementById('userInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const typingIndicator = document.getElementById('typing-indicator');
+
+            // chat history for Puter
+            let chatHistory = [{ role: "system", content: RONALD_SYSTEM }];
+
+            // initial welcome message (already in HTML, but we keep it in history)
+            chatHistory.push({ role: "assistant", content: "Hello! I'm Ronald from Troxon Electric. Ask me anything about our solar, security, automation or ICT systems — or request a quote." });
+
+            // ---------- FALLBACK local answer (no sign-in required) ----------
+            function fallbackReply(userMessage) {
+                const lowerMsg = userMessage.toLowerCase();
+                const pdfLower = fullPDFknowledge.toLowerCase();
+
+                // simple sentence extraction
+                const sentences = fullPDFknowledge.match(/[^.!?]+[.!?]+/g) || [];
+                let relevantSentences = [];
+                let keywords = lowerMsg.split(/\s+/).filter(w => w.length > 3 && !['what','where','when','which','this','that','with','from','your','tell','about','can','you'].includes(w));
+                if (keywords.length === 0) keywords = ['solar', 'contact', 'system', 'price'];
+
+                for (let s of sentences) {
+                    let sLow = s.toLowerCase();
+                    for (let k of keywords) {
+                        if (sLow.includes(k) && !relevantSentences.includes(s)) {
+                            relevantSentences.push(s.trim());
+                            break;
+                        }
+                    }
+                    if (relevantSentences.length >= 4) break; // limit length
+                }
+
+                let reply;
+                if (relevantSentences.length > 0) {
+                    reply = relevantSentences.join(' ') + ' For more details, feel free to contact us directly.';
+                } else {
+                    reply = "I'd recommend calling us at +256 705 215 444 or visiting Plot 14 Ntinda for info tailored to your project.";
+                }
+
+                // ensure contact info is included if not present
+                if (!reply.includes('+256') && !reply.includes('contact')) {
+                    reply += "\n\nYou can reach us at +256 705 215 444 or troxonelectric@gmail.com.";
+                }
+                return reply;
+            }
+
+            // append a message to the chat (and remove typing if needed)
+            function appendMessage(role, text, isHtml = false) {
+                const div = document.createElement('div');
+                div.className = `msg ${role}`;
+                if (isHtml) {
+                    div.innerHTML = text;
+                } else {
+                    div.innerText = text;
+                }
+                chatWindow.appendChild(div);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                return div;
+            }
+
+            // add quick action buttons to a message if it contains contact info
+            function maybeAddButtons(messageElement, msgText) {
+                if (msgText.includes('+256705215444') || msgText.includes('+256 705 215 444') || msgText.includes('troxonelectric@gmail.com') || msgText.includes('contact')) {
+                    const btnRow = document.createElement('div');
+                    btnRow.className = 'btn-row';
+                    btnRow.innerHTML = `
+                        <a href="https://wa.me/256705215444" class="action-btn" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        <a href="tel:+256705215444" class="action-btn call-btn"><i class="fas fa-phone-alt"></i> Call</a>
+                        <a href="mailto:troxonelectric@gmail.com" class="action-btn email-btn"><i class="fas fa-envelope"></i> Email</a>
+                    `;
+                    messageElement.appendChild(btnRow);
+                }
+            }
+
+            // show/hide typing indicator
+            function setTyping(show) {
+                if (show) {
+                    typingIndicator.style.display = 'flex';
+                } else {
+                    typingIndicator.style.display = 'none';
+                }
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
+
+            // main function to handle user query
+            async function handleUserMessage() {
+                const text = userInput.value.trim();
+                if (!text) return;
+
+                // add user message
+                appendMessage('user', text);
+                userInput.value = '';
+
+                // add to history
+                chatHistory.push({ role: "user", content: text });
+
+                // show typing indicator
+                setTyping(true);
+
+                // temporary loading message (we'll replace it)
+                const tempId = 'msg-' + Date.now();
+                const tempDiv = appendMessage('ronald', '...');  // placeholder
+
+                try {
+                    // attempt Puter AI (may throw if not signed in / not available)
+                    const response = await puter.ai.chat(chatHistory, { model: 'gpt-4o-mini' });
+                    const replyText = response.message.content.toString();
+
+                    // replace temp message with actual
+                    tempDiv.innerText = replyText;
+                    chatHistory.push({ role: "assistant", content: replyText });
+                    maybeAddButtons(tempDiv, replyText);
+                } catch (err) {
+                    console.warn("Puter AI failed (no sign-in?), using fallback.");
+                    const fallbackText = fallbackReply(text);
+                    tempDiv.innerText = fallbackText;
+                    chatHistory.push({ role: "assistant", content: fallbackText });
+                    maybeAddButtons(tempDiv, fallbackText);
+                } finally {
+                    setTyping(false);
+                    chatWindow.scrollTop = chatWindow.scrollHeight;
+                }
+            }
+
+            // event listeners
+            sendBtn.addEventListener('click', handleUserMessage);
+            userInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleUserMessage();
+                }
+            });
+
+            // add action buttons to the initial welcome message (if any)
+            const welcomeMsg = document.getElementById('welcome-msg');
+            if (welcomeMsg) {
+                maybeAddButtons(welcomeMsg, welcomeMsg.innerText);
+            }
+
+            // auto-resize textarea (nice on mobile)
+            userInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        })();
+    </script>
+</body>
+  </html>
