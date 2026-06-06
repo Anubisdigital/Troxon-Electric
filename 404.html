@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>404 · Page not found</title>
+  <!-- favicon (jamex.png) exactly as required -->
+  <link rel="icon" type="image/png" href="malaika.svg">
+  <link rel="shortcut icon" type="image/png" href="malaika.svg">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* base theme: #FEFDFB — used as fallback and body background
+       the image (404.jpg) will fully cover the container, layer is above body */
+    body {
+      background-color: #FEFDFB;      /* matches theme, visible only if image fails */
+      font-family: system-ui, 'Segoe UI', 'Helvetica Neue', 'Inter', 'Roboto', sans-serif;
+      font-weight: 300;
+      line-height: 1.2;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* main container: uses 404.jpg as responsive background covering full viewport,
+       width 100%, auto height (min-height ensures coverage) */
+    .hero-404 {
+      background-image: url('404.jpg');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;          /* covers full area, behaves like full-width & flexible height */
+      background-attachment: scroll;   /* natural scrolling, image covers each scroll segment */
+      
+      /* full viewport coverage, but content might extend — ensures image always fills the background */
+      min-height: 100vh;
+      width: 100%;
+      
+      /* flex centering: text + button above the beautiful background image */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      
+      /* extra safety for older browsers, keep text/button readable 
+         (no extra overlays, just subtle text-shadow for contrast without extra elements)*/
+      text-align: center;
+      
+      /* optional smooth transition for any interactions */
+      transition: all 0.2s ease;
+    }
+
+    /* content wrapper — no extra images, only text & button */
+    .message-container {
+      max-width: 90%;
+      width: 100%;
+      padding: 1.5rem;
+      /* no background shapes, no extra graphics, fully transparent */
+      background: transparent;
+      backdrop-filter: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    /* "OOP!!" — thin, capital, extra large, elegant */
+    .glitch-title {
+      font-size: clamp(4rem, 18vw, 10rem);
+      font-weight: 200;          /* extremely thin weight */
+      letter-spacing: 0.08em;
+      color: white;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+      word-break: keep-all;
+    }
+
+    /* secondary message: exact phrasing, thin but slight weight for readability */
+    .message-sub {
+      font-size: clamp(1.2rem, 4vw, 1.9rem);
+      font-weight: 300;          /* thin, light presence */
+      color: white;
+      margin-bottom: 2.2rem;
+      letter-spacing: 0.01em;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.25);
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.4;
+    }
+
+    /* button: thin white text, border optional but pure white text with fine border
+       to keep accessibility AND respect "thin white text" requirement */
+    .home-button {
+      display: inline-block;
+      background: transparent;        /* no fill, exactly minimal */
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      padding: 0.85rem 2.1rem;
+      font-size: 1rem;
+      font-weight: 300;              /* thin weight */
+      font-family: inherit;
+      color: white;
+      text-decoration: none;
+      letter-spacing: 1.2px;
+      transition: all 0.25s ease-out;
+      backdrop-filter: blur(0px);
+      border-radius: 48px;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* subtle hover to maintain clarity without adding extra images or elements */
+    .home-button:hover {
+      background-color: rgba(255, 255, 255, 0.12);
+      border-color: white;
+      color: white;
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .home-button:active {
+      transform: scale(0.98);
+    }
+
+    /* ensure no extra elements are visible: no footer decorations, no extra logos */
+    /* background image covers exactly, link only points to index.html */
+    /* responsive corrections: keep everything centered gracefully */
+    @media (max-width: 650px) {
+      .home-button {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+      }
+      .message-sub {
+        margin-bottom: 2rem;
+      }
+      .glitch-title {
+        margin-bottom: 0.75rem;
+      }
+    }
+
+    /* High-res screens & extra safe background coverage */
+    @media (min-width: 1800px) {
+      .hero-404 {
+        background-size: cover;      /* remains perfect cover */
+      }
+    }
+
+    /* small height adjustment: keep content vertically scrollable but always centered */
+    @media (max-height: 520px) {
+      .hero-404 {
+        justify-content: center;
+        padding: 2rem 0;
+      }
+      .glitch-title {
+        margin-bottom: 0.5rem;
+      }
+      .message-sub {
+        margin-bottom: 1rem;
+      }
+    }
+
+    /* Nothing else: no pseudo-elements with images, no embedded icons,
+       only semantic text and clean background */
+  </style>
+</head>
+<body>
+  <!-- 
+    The entire page uses background image 404.jpg as required.
+    No other graphic, no extra footer decorations, only content:
+    - OOP!! (thin capital big)
+    - 'We can't find that page your looking For :(' 
+    - button linking to index.html (thin white text)
+    Favicon: jamex.png linked in <head>.
+  -->
+  <div class="hero-404" aria-label="404 error background image covering entire viewport">
+    <div class="message-container">
+      <!-- large thin capital text: OOP!! -->
+      <h1 class="glitch-title">OOP!!</h1>
+      
+      <!-- exact message as specified, including punctuation and typography -->
+      <p class="message-sub">We can't find that page your looking For :(</p>
+      
+      <!-- thin white text button / go back to homepage (index.html) -->
+      <a href="index.html" class="home-button">go back to homepage</a>
+    </div>
+  </div>
+</body>
+</html>
