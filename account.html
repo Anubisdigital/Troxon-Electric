@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account - Troxon Electric</title>
+  <link rel="icon" type="image/png" href="troxon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --blue: #1a73e8;
+      --blue-dark: #0d62d9;
+      --green: #34a853;
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-400: #9e9e9e;
+      --text: #1a1a1a;
+      --text-muted: #5f6368;
+      --danger: #ea4335;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.14);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    h1,h2,h3,h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      line-height: 1.1;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(10,10,10,0.95);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo img { height: 40px; width: auto; }
+
+    .logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 1px;
+    }
+
+    .logo-text span { color: var(--green); }
+
+    .header-back {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .header-back:hover { color: var(--white); }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 64px);
+    }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      background: var(--black);
+      padding: 60px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated background grid */
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(26,115,232,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,115,232,0.06) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(48px); }
+    }
+
+    /* Glow orb */
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(26,115,232,0.18) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .left-content {
+      position: relative;
+      z-index: 2;
+      max-width: 440px;
+    }
+
+    .left-tag {
+      display: inline-block;
+      background: var(--green);
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      padding: 5px 14px;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .left-content h1 {
+      font-size: clamp(2.4rem, 4vw, 3.4rem);
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+      animation: fadeDown 0.6s 0.1s ease both;
+    }
+
+    .left-content h1 span { color: var(--blue); }
+
+    .left-content p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.75;
+      margin-bottom: 40px;
+      animation: fadeDown 0.6s 0.2s ease both;
+    }
+
+    .benefits {
+      list-style: none;
+      animation: fadeDown 0.6s 0.3s ease both;
+    }
+
+    .benefits li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .benefits li:last-child { border-bottom: none; }
+
+    .benefit-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(26,115,232,0.15);
+      border: 1px solid rgba(26,115,232,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .benefit-icon i { font-size: 0.75rem; color: var(--blue); }
+
+    /* Illustration */
+    .left-illustration {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      width: 180px;
+      opacity: 0.15;
+      z-index: 1;
+      animation: floatIll 5s ease-in-out infinite;
+    }
+
+    @keyframes floatIll {
+      0%,100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel {
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 48px;
+      position: relative;
+    }
+
+    /* ── SIGN IN CARD ── */
+    .auth-card {
+      width: 100%;
+      max-width: 400px;
+      animation: fadeUp 0.5s 0.2s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .auth-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    /* Auth buttons */
+    .auth-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+      padding: 14px 20px;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      margin-bottom: 14px;
+      letter-spacing: 0.3px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background 0.15s;
+    }
+
+    .auth-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .auth-btn:hover::after { background: rgba(0,0,0,0.04); }
+    .auth-btn:active { transform: translateY(0); }
+
+    .auth-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-google {
+      background: var(--white);
+      color: var(--text);
+      border: 1.5px solid var(--gray-200);
+    }
+
+    .btn-apple {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .btn-icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-icon svg { width: 20px; height: 20px; }
+
+    /* Divider */
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--gray-400);
+      font-size: 0.82rem;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200);
+    }
+
+    /* Terms */
+    .auth-terms {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.6;
+      margin-top: 24px;
+    }
+
+    .auth-terms a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    /* Error message */
+    .auth-error {
+      background: rgba(234,67,53,0.08);
+      border: 1px solid rgba(234,67,53,0.2);
+      border-left: 3px solid var(--danger);
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      color: var(--danger);
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .auth-error.show { display: block; }
+
+    /* Loading state */
+    .btn-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .btn-google .btn-spinner {
+      border-color: rgba(0,0,0,0.15);
+      border-top-color: var(--blue);
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PROFILE VIEW (shown when signed in) ── */
+    .profile-card {
+      width: 100%;
+      max-width: 400px;
+      display: none;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .profile-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--blue);
+      margin: 0 auto 16px;
+      display: block;
+    }
+
+    .profile-initials {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      border: 3px solid var(--blue);
+    }
+
+    .profile-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-family: 'Barlow Condensed', sans-serif;
+    }
+
+    .profile-email {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .profile-provider {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      background: var(--gray-100);
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .profile-info {
+      border: 1px solid var(--gray-200);
+      margin-bottom: 20px;
+    }
+
+    .profile-info-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 0.9rem;
+    }
+
+    .profile-info-row:last-child { border-bottom: none; }
+
+    .profile-info-row i {
+      width: 18px;
+      color: var(--blue);
+      flex-shrink: 0;
+    }
+
+    .profile-info-row span { color: var(--text-muted); }
+    .profile-info-row strong { color: var(--text); font-weight: 600; }
+
+    .profile-actions { display: flex; flex-direction: column; gap: 10px; }
+
+    .btn-signout {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 13px;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-signout:hover { background: #1a1a1a; transform: translateY(-1px); }
+
+    .btn-home {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 13px;
+      background: var(--blue);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-home:hover { background: var(--blue-dark); transform: translateY(-1px); }
+
+    /* ── DROPDOWN on profile avatar (top nav equivalent) ── */
+    .profile-dropdown-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-lg);
+      min-width: 200px;
+      z-index: 100;
+      display: none;
+    }
+
+    .profile-dropdown.open { display: block; }
+
+    .profile-dropdown-info {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .profile-dropdown-info strong {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .profile-dropdown-info span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .profile-dropdown a,
+    .profile-dropdown button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      font-size: 0.88rem;
+      color: var(--text);
+      text-decoration: none;
+      background: none;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .profile-dropdown a:hover,
+    .profile-dropdown button:hover { background: var(--gray-100); }
+
+    .profile-dropdown .dd-signout { color: var(--danger); }
+
+    /* Status toast */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--black);
+      color: var(--white);
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      z-index: 9999;
+      white-space: nowrap;
+      border-left: 3px solid var(--blue);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success { border-left-color: var(--green); }
+    .toast.error { border-left-color: var(--danger); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: rgba(10,10,10,0.95);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      main { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+      .right-panel { padding: 48px 28px; min-height: calc(100vh - 64px - 56px); }
+      .auth-card, .profile-card { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <img src="troxon.png" alt="Troxon Electric">
+      <span class="logo-text">TROXON <span>ELECTRIC</span></span>
+    </a>
+    <a href="index.html" class="header-back">
+      <i class="fas fa-arrow-left"></i> Back to site
+    </a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main>
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <img src="Online world-rafiki.svg" alt="" class="left-illustration">
+    <div class="left-content">
+      <span class="left-tag">Free Account</span>
+      <h1>STAY <span>CONNECTED</span><br>WITH TROXON</h1>
+      <p>Create a free account to receive updates on our latest projects, blog posts, and technical insights directly to your inbox.</p>
+
+      <ul class="benefits">
+        <li>
+          <div class="benefit-icon"><i class="fas fa-bolt"></i></div>
+          <span>Latest project updates and new installations delivered to you</span>
+        </li>
+        <li>
+          <div class="benefit-icon"><i class="fas fa-solar-panel"></i></div>
+          <span>Technical blog posts on solar, automation, and security</span>
+        </li>
+        <li>
+          <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
+          <span>Expert answers to frequently asked engineering questions</span>
+        </li>
+        <li>
+          <div class="benefit-icon"><i class="fas fa-envelope"></i></div>
+          <span>Updates delivered every few days — never spam</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- SIGN IN CARD (shown when signed out) -->
+    <div class="auth-card" id="authCard">
+      <h2 class="auth-title">SIGN IN</h2>
+      <p class="auth-subtitle">Use your Google or Apple account. No password needed.</p>
+
+      <div class="auth-error" id="authError"></div>
+
+      <!-- Google -->
+      <button class="auth-btn btn-google" id="googleBtn">
+        <span class="btn-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+        </span>
+        <span class="btn-label">Continue with Google</span>
+        <span class="btn-spinner"></span>
+      </button>
+
+      <div class="auth-divider">or</div>
+
+      <!-- Apple -->
+      <button class="auth-btn btn-apple" id="appleBtn">
+        <span class="btn-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="white">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+          </svg>
+        </span>
+        <span class="btn-label">Continue with Apple</span>
+        <span class="btn-spinner"></span>
+      </button>
+
+      <p class="auth-terms">
+        By signing in you agree to our
+        <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.<br>
+        Your data is never sold or shared with third parties.
+      </p>
+    </div>
+
+    <!-- PROFILE CARD (shown when signed in) -->
+    <div class="profile-card" id="profileCard">
+
+      <div class="profile-header">
+        <div id="profileAvatarWrap"></div>
+        <div class="profile-name" id="profileName"></div>
+        <div class="profile-email" id="profileEmail"></div>
+        <div class="profile-provider" id="profileProvider"></div>
+      </div>
+
+      <div class="profile-info" id="profileInfo"></div>
+
+      <div class="profile-actions">
+        <a href="index.html" class="btn-home">
+          <i class="fas fa-home"></i> Back to Homepage
+        </a>
+        <button class="btn-signout" id="signoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Sign Out
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2024 Troxon Electric. ERA-Certified Engineers. All rights reserved.</p>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signOut,
+    GoogleAuthProvider,
+    OAuthProvider,
+    signInWithPopup
+  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAsI6h7di4nOKvzp8SKo8t1ZdHBwxfQzYE",
+    authDomain: "troxon-9f02d.firebaseapp.com",
+    projectId: "troxon-9f02d",
+    storageBucket: "troxon-9f02d.firebasestorage.app",
+    messagingSenderId: "42257861348",
+    appId: "1:42257861348:web:a969bd22beb39088147af1",
+    measurementId: "G-NE864LXNDM"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Worker URL
+  const WORKER_URL = 'https://troxon-general-worker.lubegadoreen02.workers.dev';
+
+  // ── TOAST ──
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => { t.classList.remove('show'); }, 3500);
+  }
+
+  // ── ERROR ──
+  function showError(msg) {
+    const el = document.getElementById('authError');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 5000);
+  }
+
+  // ── REGISTER USER WITH WORKER ──
+  async function registerUser(user) {
+    try {
+      const res = await fetch(`${WORKER_URL}/api/user/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          name: user.displayName || '',
+          photoURL: user.photoURL || ''
+        })
+      });
+      const data = await res.json();
+      if (data.isNew) {
+        showToast('Welcome to Troxon Electric! Check your email.', 'success');
+      }
+    } catch {
+      // Silently fail — user is still signed in
+    }
+  }
+
+  // ── AUTH STATE ──
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      showProfile(user);
+    } else {
+      showAuth();
+    }
+  });
+
+  // ── SHOW AUTH CARD ──
+  function showAuth() {
+    document.getElementById('authCard').style.display = 'block';
+    document.getElementById('profileCard').style.display = 'none';
+  }
+
+  // ── SHOW PROFILE CARD ──
+  function showProfile(user) {
+    document.getElementById('authCard').style.display = 'none';
+    document.getElementById('profileCard').style.display = 'block';
+
+    const name = user.displayName || 'Troxon User';
+    const email = user.email || '';
+    const initials = name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+
+    // Determine provider
+    const providerData = user.providerData[0];
+    const providerId = providerData?.providerId || '';
+    let providerLabel = 'Account';
+    let providerIcon = 'fas fa-user';
+
+    if (providerId.includes('google')) {
+      providerLabel = 'Google Account';
+      providerIcon = 'fab fa-google';
+    } else if (providerId.includes('apple')) {
+      providerLabel = 'Apple Account';
+      providerIcon = 'fab fa-apple';
+    }
+
+    // Avatar
+    document.getElementById('profileAvatarWrap').innerHTML = user.photoURL
+      ? `<img src="${user.photoURL}" alt="${name}" class="profile-avatar">`
+      : `<div class="profile-initials">${initials}</div>`;
+
+    document.getElementById('profileName').textContent = name;
+    document.getElementById('profileEmail').textContent = email;
+    document.getElementById('profileProvider').innerHTML =
+      `<i class="${providerIcon}"></i> ${providerLabel}`;
+
+    // Info rows
+    const joined = user.metadata?.creationTime
+      ? new Date(user.metadata.creationTime).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })
+      : 'Unknown';
+
+    document.getElementById('profileInfo').innerHTML = `
+      <div class="profile-info-row">
+        <i class="fas fa-user"></i>
+        <div><span>Name</span><br><strong>${name}</strong></div>
+      </div>
+      <div class="profile-info-row">
+        <i class="fas fa-envelope"></i>
+        <div><span>Email</span><br><strong>${email}</strong></div>
+      </div>
+      <div class="profile-info-row">
+        <i class="fas fa-calendar-alt"></i>
+        <div><span>Member since</span><br><strong>${joined}</strong></div>
+      </div>
+      <div class="profile-info-row">
+        <i class="fas fa-bell"></i>
+        <div><span>Email updates</span><br><strong>Active — every few days</strong></div>
+      </div>
+    `;
+
+    // Sign out
+    document.getElementById('signoutBtn').addEventListener('click', async () => {
+      await signOut(auth);
+      showToast('Signed out successfully.');
+    });
+  }
+
+  // ── SIGN IN HELPERS ──
+  function setLoading(btn, loading) {
+    const label = btn.querySelector('.btn-label');
+    const spinner = btn.querySelector('.btn-spinner');
+    btn.disabled = loading;
+    label.style.opacity = loading ? '0.4' : '1';
+    spinner.style.display = loading ? 'block' : 'none';
+  }
+
+  function getErrorMessage(code) {
+    const messages = {
+      'auth/popup-closed-by-user': 'Sign in was cancelled. Please try again.',
+      'auth/popup-blocked': 'Popup was blocked by your browser. Please allow popups and try again.',
+      'auth/network-request-failed': 'Network error. Please check your connection.',
+      'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+      'auth/user-disabled': 'This account has been disabled.',
+      'auth/account-exists-with-different-credential': 'An account already exists with this email using a different sign-in method.',
+      'auth/cancelled-popup-request': 'Another sign in is already in progress.',
+    };
+    return messages[code] || 'Something went wrong. Please try again.';
+  }
+
+  // ── GOOGLE SIGN IN ──
+  document.getElementById('googleBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('googleBtn');
+    setLoading(btn, true);
+
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.addScope('email');
+      provider.addScope('profile');
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      const result = await signInWithPopup(auth, provider);
+      await registerUser(result.user);
+
+      // Redirect to index after short delay
+      setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+
+    } catch (err) {
+      showError(getErrorMessage(err.code));
+      setLoading(btn, false);
+    }
+  });
+
+  // ── APPLE SIGN IN ──
+  document.getElementById('appleBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('appleBtn');
+    setLoading(btn, true);
+
+    try {
+      const provider = new OAuthProvider('apple.com');
+      provider.addScope('email');
+      provider.addScope('name');
+
+      const result = await signInWithPopup(auth, provider);
+      await registerUser(result.user);
+
+      setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+
+    } catch (err) {
+      showError(getErrorMessage(err.code));
+      setLoading(btn, false);
+    }
+  });
+</script>
+
+</body>
+</html>
