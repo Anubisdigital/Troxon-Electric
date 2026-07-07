@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Initial Setup</title>
+  <style>
+    body {
+      background: #111111;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .setup-container {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 { margin-bottom: 20px; color: #1a73e8; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; color: #9e9e9e; }
+    input {
+      width: 100%;
+      padding: 10px;
+      background: #252525;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #fff;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #1a73e8;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover { background: #0d62d9; }
+    .result-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #222;
+      border-left: 4px solid #34a853;
+      display: none;
+    }
+    .uid-text {
+      font-family: monospace;
+      color: #34a853;
+      word-break: break-all;
+      user-select: all;
+      background: #000;
+      padding: 5px;
+      display: block;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="setup-container">
+  <h2>Create Admin Account</h2>
+  <p style="color: #9e9e9e; font-size: 14px;">Ask your client to fill this out to set their secret email and password.</p>
+  
+  <form id="registerForm">
+    <div class="form-group">
+      <label>Admin Email</label>
+      <input type="email" id="email" required placeholder="client@example.com">
+    </div>
+    <div class="form-group">
+      <label>Admin Password</label>
+      <input type="password" id="password" required placeholder="••••••••" minlength="6">
+    </div>
+    <button type="submit" id="submitBtn">Generate Account</button>
+  </form>
+
+  <div id="resultBox" class="result-box">
+    <strong style="color: #34a853;">Success! Account Created.</strong>
+    <p style="font-size: 13px; margin: 5px 0;">Please copy the unique ID below and send it to your developer:</p>
+    <span id="uidDisplay" class="uid-text"></span>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+  // TODO: Replace this with your project's exact Firebase configuration values
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const submitBtn = document.getElementById('submitBtn');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Creating...";
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Show the UID string to give to you
+      document.getElementById('uidDisplay').textContent = user.uid;
+      document.getElementById('resultBox').style.display = 'block';
+      submitBtn.textContent = "Account Created";
+    } catch (error) {
+      alert("Error creating account: " + error.message);
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Generate Account";
+    }
+  });
+</script>
+
+</body>
+</html>
