@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ | Troxon Electric</title>
+  <link rel="icon" type="image/png" href="troxon.png">
+  <!-- Fonts (same as index) -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --blue: #1a73e8;
+      --blue-dark: #0d62d9;
+      --green: #34a853;
+      --green-dark: #2e8b47;
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-400: #9e9e9e;
+      --text: #1a1a1a;
+      --text-muted: #5f6368;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    h1,h2,h3,h4 { font-family: 'Barlow Condensed', sans-serif; line-height: 1.1; }
+    .container { width: 100%; max-width: 1320px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── HEADER (same as index) ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      gap: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .logo img { height: 44px; width: auto; }
+
+    .logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: 1px;
+      line-height: 1;
+    }
+
+    .logo-text span { color: var(--green); }
+
+    nav { display: flex; align-items: center; gap: 28px; }
+
+    nav a {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      position: relative;
+      padding-bottom: 3px;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--blue);
+      transition: width 0.3s;
+    }
+
+    nav a:hover { color: var(--blue); }
+    nav a:hover::after { width: 100%; }
+    nav a.active { color: var(--blue); }
+    nav a.active::after { width: 100%; }
+
+    .mobile-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--blue);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 1998;
+    }
+
+    .mobile-overlay.open { display: block; }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 0; right: -100%;
+      width: 300px;
+      height: 100%;
+      background: var(--white);
+      z-index: 1999;
+      padding: 30px 24px;
+      transition: right 0.32s cubic-bezier(0.4,0,0.2,1);
+      overflow-y: auto;
+    }
+
+    .mobile-drawer.open { right: 0; }
+
+    .mobile-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      color: var(--blue);
+      cursor: pointer;
+    }
+
+    .mobile-nav { list-style: none; margin-top: 50px; }
+
+    .mobile-nav li a {
+      display: block;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-200);
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s, padding-left 0.2s;
+    }
+
+    .mobile-nav li a:hover { color: var(--blue); padding-left: 8px; }
+
+    /* ── ANNOUNCEMENT BANNER (same as index) ── */
+    .announcement-banner {
+      display: none;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+      position: relative;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .announcement-banner.show { display: flex; }
+    .announcement-banner.info    { background: #e8f0fe; color: var(--blue-dark); }
+    .announcement-banner.success { background: #e6f4ea; color: var(--green-dark); }
+    .announcement-banner.warning { background: #fef3cd; color: #856404; }
+    .announcement-banner.promo   { background: #1a73e8; color: #fff; }
+
+    .banner-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: rgba(0,0,0,0.12);
+      color: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.3px;
+    }
+
+    .banner-close {
+      position: absolute;
+      right: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+      opacity: 0.6;
+      font-size: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* ── HERO (FAQ version) ── */
+    .hero {
+      padding: 80px 0 60px;
+      background: linear-gradient(135deg, rgba(26,115,232,0.95) 0%, rgba(52,168,83,0.9) 100%),
+                  url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      color: var(--white);
+      text-align: center;
+    }
+
+    .hero-content { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+    .hero-tag {
+      display: inline-block;
+      background: var(--green);
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      padding: 5px 14px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      margin-bottom: 24px;
+      color: var(--white);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.95);
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── SECTION TITLES (same as index) ── */
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .section-title span { color: var(--blue); }
+
+    .section-sub {
+      font-size: 0.97rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      line-height: 1.7;
+      margin-bottom: 44px;
+    }
+
+    .section-line {
+      width: 56px; height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      margin-bottom: 16px;
+    }
+
+    /* ── BUTTON STYLES (consistent with index) ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      background: var(--blue);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      font-family: 'Barlow', sans-serif;
+    }
+
+    .btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+
+    /* ── CARDS (same as index) ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      padding: 28px;
+      margin-bottom: 24px;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+
+    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--blue); }
+
+    .card-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── FAQ ACCORDION ── */
+    .faq-container { padding: 60px 0; background: var(--gray-100); }
+
+    .faq-search-bar {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .faq-search-bar i { color: var(--text-muted); font-size: 1.2rem; }
+
+    .faq-search-input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .faq-search-input::placeholder { color: var(--gray-400); }
+
+    .category-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    .cat-btn {
+      padding: 7px 16px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .cat-btn:hover, .cat-btn.active { background: var(--blue); color: var(--white); border-color: var(--blue); }
+
+    .faq-item {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: box-shadow 0.25s, border-color 0.25s;
+    }
+
+    .faq-item:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+
+    .faq-question {
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      transition: background 0.2s;
+      gap: 16px;
+    }
+
+    .faq-question:hover { background: var(--gray-100); }
+
+    .faq-question i {
+      color: var(--blue);
+      font-size: 1rem;
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+
+    .faq-answer {
+      padding: 0 28px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .faq-answer.open {
+      max-height: 2000px;
+      padding: 0 28px 24px;
+    }
+
+    .faq-answer img {
+      max-width: 100%;
+      height: auto;
+      margin: 16px 0;
+      border-radius: 4px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .faq-answer p { margin-bottom: 12px; }
+
+    .search-highlight {
+      background: #e3f2fd;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: var(--blue);
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+    }
+
+    .no-results h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .no-results p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    /* ── FOOTER (same as index) ── */
+    footer {
+      background: var(--black);
+      color: var(--white);
+      padding: 64px 0 32px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-col h4 {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 18px;
+    }
+
+    .footer-col p { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.75; }
+
+    .footer-col a {
+      display: block;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover { color: var(--white); }
+
+    .footer-contact-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 0.86rem;
+      color: rgba(255,255,255,0.55);
+    }
+
+    .footer-contact-row i { color: var(--blue); margin-top: 2px; flex-shrink: 0; }
+
+    .footer-bottom {
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.28);
+    }
+
+    .footer-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .footer-logo span { color: var(--green); }
+
+    @media (max-width: 768px) {
+      nav { display: none; }
+      .mobile-btn { display: block; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BANNER (same logic as index) -->
+<div class="announcement-banner" id="announcementBanner">
+  <span id="bannerMsg"></span>
+  <a class="banner-cta" id="bannerCtaBtn" href="#" style="display:none;"></a>
+  <button class="banner-close" id="bannerClose" aria-label="Close"><i class="fas fa-times"></i></button>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <img src="troxon.png" alt="Troxon Electric">
+        <span class="logo-text">TROXON <span>ELECTRIC</span></span>
+      </a>
+
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="contact.html">Contact</a>
+        <a href="location.html">Location</a>
+        <a href="faq.html" class="active">FAQ</a>
+        <a href="blog.html">Blog</a>
+      </nav>
+
+      <button class="mobile-btn" id="mobileOpen" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <button class="mobile-close" id="mobileClose"><i class="fas fa-times"></i></button>
+  <ul class="mobile-nav">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="location.html">Location</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="blog.html">Blog</a></li>
+  </ul>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <span class="hero-tag">Frequently Asked Questions</span>
+      <h1>GET THE ANSWERS</h1>
+      <p>Find detailed answers to common electrical engineering questions, installation guides, and maintenance tips.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section class="faq-container">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-line"></div>
+      <h2 class="section-title">Questions &amp; <span>Answers</span></h2>
+      <p class="section-sub">Search or browse categories to find what you're looking for.</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="faq-search-bar">
+      <i class="fas fa-search"></i>
+      <input type="text" class="faq-search-input" id="faq-search" placeholder="Search questions...">
+    </div>
+
+    <!-- Category Filters -->
+    <div class="category-filters" id="category-filters">
+      <button class="cat-btn active" data-category="all">All</button>
+      <button class="cat-btn" data-category="residential">Residential</button>
+      <button class="cat-btn" data-category="commercial">Commercial</button>
+      <button class="cat-btn" data-category="industrial">Industrial</button>
+      <button class="cat-btn" data-category="safety">Safety</button>
+      <button class="cat-btn" data-category="installation">Installation</button>
+      <button class="cat-btn" data-category="maintenance">Maintenance</button>
+    </div>
+
+    <!-- FAQ Items -->
+    <div id="faq-list">
+      <div style="text-align:center; padding:40px; color:var(--text-muted);">
+        <i class="fas fa-spinner fa-pulse"></i> Loading FAQs...
+      </div>
+    </div>
+
+    <!-- No Results Fallback -->
+    <div id="no-results" style="display:none;" class="no-results">
+      <h3>No exact matches found</h3>
+      <p>Try a broader search term, or browse the categories above.</p>
+      <a href="contact.html" class="btn-primary"><i class="fas fa-envelope"></i> Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <span class="footer-logo">TROXON <span>ELECTRIC</span></span>
+        <p>Leading provider of advanced electrical, automation, and renewable energy solutions across East Africa. ERA-Certified engineers with over 10 years of experience.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <a href="index.html">Home</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="location.html">Location</a>
+        <a href="faq.html">FAQs</a>
+        <a href="blog.html">Blog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="index.html#gallery">Solar Energy</a>
+        <a href="index.html#gallery">Security Systems</a>
+        <a href="index.html#gallery">Building Automation</a>
+        <a href="index.html#gallery">ICT Systems</a>
+        <a href="index.html#gallery">Power Systems</a>
+        <a href="index.html#gallery">HVAC</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-row">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Sir Apollo Kaggwa Rd, Makerere, next to DFCU Bank, Kampala</span>
+        </div>
+        <div class="footer-contact-row">
+          <i class="fas fa-phone"></i>
+          <span>+256 705 215 444</span>
+        </div>
+        <div class="footer-contact-row">
+          <i class="fas fa-envelope"></i>
+          <span><a href="/cdn-cgi/l/email-protection#ec989e839483828980899f98828dac8b818d8580c28f8381">troxonelectric@gmail.com</a></span>
+        </div>
+        <div class="footer-contact-row">
+          <i class="fas fa-clock"></i>
+          <span>Mon–Sat: 8:00 AM – 7:00 PM</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Troxon Electric. All rights reserved. ERA-Certified Engineers — Kampala, Uganda.</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getFirestore, collection, query, orderBy, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  // SINGLE PROJECT - same as index (troxon-9f02d)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAsI6h7di4nOKvzp8SKo8t1ZdHBwxfQzYE",
+    authDomain: "troxon-9f02d.firebaseapp.com",
+    projectId: "troxon-9f02d",
+    storageBucket: "troxon-9f02d.firebasestorage.app",
+    messagingSenderId: "42257861348",
+    appId: "1:42257861348:web:a969bd22beb39088147af1"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ── MOBILE MENU ──
+  const mobileOpen = document.getElementById('mobileOpen');
+  const mobileClose = document.getElementById('mobileClose');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+
+  function openMenu() {
+    mobileDrawer.classList.add('open');
+    mobileOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    mobileDrawer.classList.remove('open');
+    mobileOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  mobileOpen.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileOverlay.addEventListener('click', closeMenu);
+  document.querySelectorAll('.mobile-nav a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+  // ── ANNOUNCEMENT BANNER ──
+  (async () => {
+    try {
+      const snap = await getDoc(doc(db, 'settings', 'banner'));
+      if (snap.exists()) {
+        const b = snap.data();
+        if (b.active && b.text) {
+          const banner = document.getElementById('announcementBanner');
+          document.getElementById('bannerMsg').textContent = b.text;
+          banner.className = 'announcement-banner show ' + (b.type || 'info');
+          if (b.ctaLabel && b.ctaUrl) {
+            const cta = document.getElementById('bannerCtaBtn');
+            cta.textContent = b.ctaLabel;
+            cta.href = b.ctaUrl;
+            cta.style.display = 'inline-flex';
+          }
+          if (b.expiryDays > 0) {
+            const expiresAt = b.updatedAt?.toDate ? new Date(b.updatedAt.toDate().getTime() + b.expiryDays * 86400000) : null;
+            if (expiresAt && new Date() > expiresAt) banner.classList.remove('show');
+          }
+        }
+      }
+    } catch (e) {}
+    document.getElementById('bannerClose').addEventListener('click', () => {
+      document.getElementById('announcementBanner').classList.remove('show');
+    });
+  })();
+
+  // ── FAQ LOGIC ──
+  let allFAQs = [];
+  let currentCategory = 'all';
+  let currentSearch = '';
+
+  async function loadFAQs() {
+    const faqList = document.getElementById('faq-list');
+    try {
+      const q = query(collection(db, 'faqs'), orderBy('timestamp', 'desc'));
+      const snap = await getDocs(q);
+      allFAQs = [];
+      snap.forEach(doc => {
+        const data = doc.data();
+        allFAQs.push({
+          id: doc.id,
+          title: data.title || 'Untitled',
+          body: data.body || '',
+          category: data.category || 'general',
+          images: data.images || []
+        });
+      });
+      renderFAQs();
+    } catch (e) {
+      faqList.innerHTML = '<div class="no-results"><p>Could not load FAQs. Please try again.</p></div>';
+    }
+  }
+
+  function renderFAQs() {
+    const faqList = document.getElementById('faq-list');
+    const noResults = document.getElementById('no-results');
+
+    // Filter by category
+    let filtered = allFAQs.filter(f => currentCategory === 'all' || f.category === currentCategory);
+
+    // Search filter (simple case-insensitive match on title/body)
+    if (currentSearch.trim()) {
+      const term = currentSearch.toLowerCase();
+      filtered = filtered.filter(f =>
+        f.title.toLowerCase().includes(term) || f.body.toLowerCase().includes(term)
+      );
+    }
+
+    if (filtered.length === 0) {
+      faqList.innerHTML = '';
+      noResults.style.display = 'block';
+      return;
+    }
+
+    noResults.style.display = 'none';
+    faqList.innerHTML = filtered.map((faq, idx) => {
+      const imgHtml = faq.images.map(img => `<img src="${img}" alt="FAQ image" loading="lazy">`).join('');
+      return `
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFAQ(${idx})">
+            <span>${faq.title}</span>
+            <i class="fas fa-chevron-down" id="faq-icon-${idx}"></i>
+          </div>
+          <div class="faq-answer" id="faq-answer-${idx}">
+            <div class="faq-body">${faq.body}</div>
+            ${imgHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Re-attach event listeners won't work with innerHTML, so we use global function
+    window.toggleFAQ = (index) => {
+      const answer = document.getElementById(`faq-answer-${index}`);
+      const icon = document.getElementById(`faq-icon-${index}`);
+      if (answer.classList.contains('open')) {
+        answer.classList.remove('open');
+        icon.style.transform = 'rotate(0deg)';
+      } else {
+        // Close all others
+        document.querySelectorAll('.faq-answer.open').forEach(el => el.classList.remove('open'));
+        document.querySelectorAll('.faq-question i').forEach(el => el.style.transform = 'rotate(0deg)');
+        answer.classList.add('open');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    };
+  }
+
+  // Category filter
+  document.getElementById('category-filters').addEventListener('click', (e) => {
+    if (!e.target.classList.contains('cat-btn')) return;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentCategory = e.target.dataset.category;
+    renderFAQs();
+  });
+
+  // Search with debounce
+  let searchTimeout;
+  document.getElementById('faq-search').addEventListener('input', function () {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      currentSearch = this.value;
+      renderFAQs();
+    }, 400);
+  });
+
+  // Load FAQs on page load
+  loadFAQs();
+</script>
+</body>
+</html>
