@@ -2092,6 +2092,113 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <!-- PLAIN JS (no module scope issues) -->
+<script>
+  // ── MOBILE MENU ──
+  var mobileOpen    = document.getElementById('mobileOpen');
+  var mobileClose   = document.getElementById('mobileClose');
+  var mobileOverlay = document.getElementById('mobileOverlay');
+  var mobileDrawer  = document.getElementById('mobileDrawer');
+
+  function openMenu()  { mobileDrawer.classList.add('open'); mobileOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeMenu() { mobileDrawer.classList.remove('open'); mobileOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+  mobileOpen.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileOverlay.addEventListener('click', closeMenu);
+  document.querySelectorAll('.mobile-nav a').forEach(function(a) { a.addEventListener('click', closeMenu); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
+
+  // ── SCROLL TOP ──
+  var scrollTopBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', function() { scrollTopBtn.classList.toggle('show', window.scrollY > 400); });
+  scrollTopBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  // ── SCROLL REVEAL ──
+  function revealElements() {
+    document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-right:not(.visible)').forEach(function(el) {
+      if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('visible');
+    });
+  }
+
+  window.addEventListener('scroll', revealElements, { passive: true });
+  revealElements();
+
+  // ── COUNTER ANIMATION ──
+  function animateCounter(el) {
+    var target   = parseInt(el.dataset.target);
+    var suffix   = el.dataset.suffix || '';
+    var duration = 1400;
+    var start    = performance.now();
+
+    function update(now) {
+      var elapsed  = now - start;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased    = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(eased * target) + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  var statObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !entry.target.dataset.counted) {
+        entry.target.dataset.counted = 'true';
+        animateCounter(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.stat-num[data-target]').forEach(function(el) { statObserver.observe(el); });
+
+  // ── MAP ──
+  document.addEventListener('DOMContentLoaded', function() {
+    var mapEl = document.getElementById('map');
+    if (mapEl) {
+      var lat = 0.3340, lng = 32.5665;
+      var map = L.map('map').setView([lat, lng], 17);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+      }).addTo(map);
+      L.marker([lat, lng]).addTo(map)
+        .bindPopup('<strong>Troxon Electric</strong><br>Sir Apollo Kaggwa Rd, Makerere<br>next to DFCU Bank, Kampala')
+        .openPopup();
+    }
+  });
+
+  // ── CATEGORY CARDS ──
+  document.querySelectorAll('.cat-card').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      e.preventDefault();
+      var filter = card.dataset.filter;
+      window._activeFilter = filter;
+      document.querySelectorAll('.cat-btn').forEach(function(b) {
+        b.classList.remove('active');
+        if (b.dataset.cat === filter) b.classList.add('active');
+      });
+      if (typeof window._renderGallery === 'function') window._renderGallery();
+      document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // ── BANNER CLOSE ──
+  document.getElementById('bannerClose').addEventListener('click', function() {
+    document.getElementById('announcementBanner').classList.remove('show');
+  });
+
+  // ── SCROLL TO QUOTE/VISIT FORM ──
+  function scrollToForms() {
+    document.getElementById('forms').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  document.getElementById('heroQuoteBtn').addEventListener('click', scrollToForms);
+  document.getElementById('heroVisitBtn').addEventListener('click', scrollToForms);
+  document.getElementById('stripQuoteBtn').addEventListener('click', scrollToForms);
+</script>
+
+<!-- FIREBASE MODULE (SINGLE PROJECT) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
   import {
@@ -2119,7 +2226,7 @@
     var el = document.getElementById(id);
     el.textContent = msg;
     el.className = 'form-status ' + type + ' show';
-    setTimeout(function() { el.classList.remove('show'); }, 8000);
+    setTimeout(function() { el.classList.remove('show'); }, 5000);
   }
 
   function setSpinner(id, show) {
@@ -2491,38 +2598,16 @@
   } catch(e) {}
 
   // ═══════════════════════════════════════════════
-  // ── FORM SUBMISSIONS (Firebase + HTML Form for Worker) ──
+  // ── FIXED FORM SUBMISSIONS (Firebase + Worker Email) ──
   // ═══════════════════════════════════════════════
 
-  const WORKER_URL = 'https://troxon-general-worker.lubegadoreen02.workers.dev/api/booking/create-form';
-
-  // Helper to submit form data without CORS errors
-  function submitViaHTMLForm(url, data) {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = url;
-    form.target = '_blank'; // Opens in a new tab to show success/error JSON
-    form.style.display = 'none';
-
-    for (const key in data) {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = data[key];
-      form.appendChild(input);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-  }
+  const WORKER_URL = 'https://troxon-general-worker.lubegadoreen02.workers.dev/api/booking/create';
 
   // ── QUOTE REQUEST FORM ──
   document.getElementById('submitQuoteBtn').addEventListener('click', async () => {
     const name  = document.getElementById('qName').value.trim();
     const phone = document.getElementById('qPhone').value.trim();
-    const email = document.getElementById('qEmail').value.trim();
-    if (!name || !phone || !email) { showFormStatus('qStatus', 'Name, phone, and email are required.', 'error'); return; }
+    if (!name || !phone) { showFormStatus('qStatus', 'Name and phone number are required.', 'error'); return; }
 
     const btn = document.getElementById('submitQuoteBtn');
     btn.disabled = true;
@@ -2532,30 +2617,34 @@
       type: 'quote',
       name: name,
       phone: phone,
-      email: email,
+      email: document.getElementById('qEmail').value.trim(),
       service: document.getElementById('qService').value,
       message: document.getElementById('qMessage').value.trim()
     };
 
     try {
       // 1. Save to Firebase
-      await addDoc(collection(db, 'quote_requests'), {
-        ...formData,
+      await addDoc(collection(db, 'quote_requests'), { 
+        ...formData, 
         location: document.getElementById('qLocation').value.trim(),
-        status: 'new',
-        source: 'website',
-        createdAt: serverTimestamp()
+        status: 'new', 
+        source: 'website', 
+        createdAt: serverTimestamp() 
       });
 
-      // 2. Send email via Worker (No CORS issues!)
-      submitViaHTMLForm(WORKER_URL, formData);
+      // 2. Send email via Worker
+      await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
       showFormStatus('qStatus', 'Thank you! We will contact you within 24 hours.', 'success');
       ['qName','qPhone','qEmail','qLocation','qMessage'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('qService').value = '';
     } catch(e) {
       console.error('Quote Error:', e);
-      showFormStatus('qStatus', 'Error saving to database. Please call us directly.', 'error');
+      showFormStatus('qStatus', 'Error sending request. Please call us directly.', 'error');
     } finally {
       btn.disabled = false;
       setSpinner('qSpinner', false);
@@ -2566,9 +2655,8 @@
   document.getElementById('submitVisitBtn').addEventListener('click', async () => {
     const name    = document.getElementById('vName').value.trim();
     const phone   = document.getElementById('vPhone').value.trim();
-    const email   = document.getElementById('vEmail').value.trim();
     const address = document.getElementById('vAddress').value.trim();
-    if (!name || !phone || !email || !address) { showFormStatus('vStatus', 'Name, phone, email, and address are required.', 'error'); return; }
+    if (!name || !phone || !address) { showFormStatus('vStatus', 'Name, phone, and address are required.', 'error'); return; }
 
     const btn = document.getElementById('submitVisitBtn');
     btn.disabled = true;
@@ -2578,31 +2666,35 @@
       type: 'visit',
       name: name,
       phone: phone,
-      email: email,
+      email: document.getElementById('vEmail').value.trim(),
       service: document.getElementById('vService').value,
       message: document.getElementById('vMessage').value.trim() + " (Address: " + address + ")"
     };
 
     try {
       // 1. Save to Firebase
-      await addDoc(collection(db, 'site_visits'), {
-        ...formData,
-        preferredDate: document.getElementById('vDate').value,
+      await addDoc(collection(db, 'site_visits'), { 
+        ...formData, 
+        preferredDate: document.getElementById('vDate').value, 
         address: address,
-        status: 'new',
-        source: 'website',
-        createdAt: serverTimestamp()
+        status: 'new', 
+        source: 'website', 
+        createdAt: serverTimestamp() 
       });
 
-      // 2. Send email via Worker (No CORS issues!)
-      submitViaHTMLForm(WORKER_URL, formData);
+      // 2. Send email via Worker
+      await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
       showFormStatus('vStatus', 'Booking received! Our engineer will confirm your visit shortly.', 'success');
       ['vName','vPhone','vEmail','vAddress','vDate','vMessage'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('vService').value = '';
     } catch(e) {
       console.error('Visit Error:', e);
-      showFormStatus('vStatus', 'Error saving to database. Please call us directly.', 'error');
+      showFormStatus('vStatus', 'Error booking. Please call us directly.', 'error');
     } finally {
       btn.disabled = false;
       setSpinner('vSpinner', false);
@@ -2631,26 +2723,31 @@
 
     try {
       // 1. Save to Firebase
-      await addDoc(collection(db, 'contact_messages'), {
-        ...formData,
-        status: 'new',
-        source: 'website',
-        createdAt: serverTimestamp()
+      await addDoc(collection(db, 'contact_messages'), { 
+        ...formData, 
+        status: 'new', 
+        source: 'website', 
+        createdAt: serverTimestamp() 
       });
 
-      // 2. Send email via Worker (No CORS issues!)
-      submitViaHTMLForm(WORKER_URL, formData);
+      // 2. Send email via Worker
+      await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
       showFormStatus('cStatus', 'Message sent! We will reply to your email shortly.', 'success');
       ['cName','cEmail','cPhone','cMessage'].forEach(id => document.getElementById(id).value = '');
     } catch(e) {
       console.error('Contact Error:', e);
-      showFormStatus('cStatus', 'Error saving to database. Please email us directly.', 'error');
+      showFormStatus('cStatus', 'Error sending message. Please email us directly.', 'error');
     } finally {
       btn.disabled = false;
       setSpinner('cSpinner', false);
     }
   });
-          </script>
+
+</script>
 </body>
-  </html>
+      </html>
