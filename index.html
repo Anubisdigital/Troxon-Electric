@@ -2089,7 +2089,6 @@
 </div>
 
 <!-- LEAFLET -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <!-- PLAIN JS (no module scope issues) -->
@@ -2598,6 +2597,12 @@
     }
   } catch(e) {}
 
+  // ═══════════════════════════════════════════════
+  // ── FIXED FORM SUBMISSIONS (Firebase + Worker Email) ──
+  // ═══════════════════════════════════════════════
+
+  const WORKER_URL = 'https://troxon-general-worker.lubegadoreen02.workers.dev/api/booking/create';
+
   // ── QUOTE REQUEST FORM ──
   document.getElementById('submitQuoteBtn').addEventListener('click', async () => {
     const name  = document.getElementById('qName').value.trim();
@@ -2608,21 +2613,37 @@
     btn.disabled = true;
     setSpinner('qSpinner', true);
 
+    const formData = {
+      type: 'quote',
+      name: name,
+      phone: phone,
+      email: document.getElementById('qEmail').value.trim(),
+      service: document.getElementById('qService').value,
+      message: document.getElementById('qMessage').value.trim()
+    };
+
     try {
-      await addDoc(collection(db, 'quote_requests'), {
-        name, phone,
-        email:    document.getElementById('qEmail').value.trim(),
-        service:  document.getElementById('qService').value,
+      // 1. Save to Firebase
+      await addDoc(collection(db, 'quote_requests'), { 
+        ...formData, 
         location: document.getElementById('qLocation').value.trim(),
-        message:  document.getElementById('qMessage').value.trim(),
-        status:   'new',
-        source:   'website',
-        createdAt: serverTimestamp()
+        status: 'new', 
+        source: 'website', 
+        createdAt: serverTimestamp() 
       });
+
+      // 2. Send email via Worker
+      await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
       showFormStatus('qStatus', 'Thank you! We will contact you within 24 hours.', 'success');
       ['qName','qPhone','qEmail','qLocation','qMessage'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('qService').value = '';
     } catch(e) {
+      console.error('Quote Error:', e);
       showFormStatus('qStatus', 'Error sending request. Please call us directly.', 'error');
     } finally {
       btn.disabled = false;
@@ -2641,21 +2662,38 @@
     btn.disabled = true;
     setSpinner('vSpinner', true);
 
+    const formData = {
+      type: 'visit',
+      name: name,
+      phone: phone,
+      email: document.getElementById('vEmail').value.trim(),
+      service: document.getElementById('vService').value,
+      message: document.getElementById('vMessage').value.trim() + " (Address: " + address + ")"
+    };
+
     try {
-      await addDoc(collection(db, 'site_visits'), {
-        name, phone, address,
-        email:         document.getElementById('vEmail').value.trim(),
-        preferredDate: document.getElementById('vDate').value,
-        service:       document.getElementById('vService').value,
-        message:       document.getElementById('vMessage').value.trim(),
-        status:        'new',
-        source:        'website',
-        createdAt:     serverTimestamp()
+      // 1. Save to Firebase
+      await addDoc(collection(db, 'site_visits'), { 
+        ...formData, 
+        preferredDate: document.getElementById('vDate').value, 
+        address: address,
+        status: 'new', 
+        source: 'website', 
+        createdAt: serverTimestamp() 
       });
+
+      // 2. Send email via Worker
+      await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
       showFormStatus('vStatus', 'Booking received! Our engineer will confirm your visit shortly.', 'success');
       ['vName','vPhone','vEmail','vAddress','vDate','vMessage'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('vService').value = '';
     } catch(e) {
+      console.error('Visit Error:', e);
       showFormStatus('vStatus', 'Error booking. Please call us directly.', 'error');
     } finally {
       btn.disabled = false;
@@ -2674,25 +2712,42 @@
     btn.disabled = true;
     setSpinner('cSpinner', true);
 
+    const formData = {
+      type: 'contact',
+      name: name,
+      phone: document.getElementById('cPhone').value.trim(),
+      email: email,
+      service: 'General Inquiry',
+      message: message
+    };
+
     try {
-      await addDoc(collection(db, 'contact_messages'), {
-        name, email,
-        phone:   document.getElementById('cPhone').value.trim(),
-        message,
-        status:  'new',
-        source:  'website',
-        createdAt: serverTimestamp()
+      // 1. Save to Firebase
+      await addDoc(collection(db, 'contact_messages'), { 
+        ...formData, 
+        status: 'new', 
+        source: 'website', 
+        createdAt: serverTimestamp() 
       });
+
+      // 2. Send email via Worker
+      await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
       showFormStatus('cStatus', 'Message sent! We will reply to your email shortly.', 'success');
       ['cName','cEmail','cPhone','cMessage'].forEach(id => document.getElementById(id).value = '');
     } catch(e) {
+      console.error('Contact Error:', e);
       showFormStatus('cStatus', 'Error sending message. Please email us directly.', 'error');
     } finally {
       btn.disabled = false;
       setSpinner('cSpinner', false);
     }
   });
+
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"474d14aefea148e39649f71d8bba2015","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
-    </html>
+                                                                           </html>
