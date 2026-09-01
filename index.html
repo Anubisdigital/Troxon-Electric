@@ -2633,7 +2633,7 @@
       });
 
       // 2. Send email via Worker
-      await fetch(WORKER_URL, {
+      await fetch(`${WORKER_URL}/api/booking/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
